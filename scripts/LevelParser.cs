@@ -21,20 +21,20 @@ public partial class LevelParser : Node
 
         ParseLevelDescription();
 
-        LevelGenerator.GenerateLevel(_voxels);
+        LevelGenerator.GenerateLevel(_description, _voxels);
     }
 
     private void ParseLevelDescription()
     {
         foreach (var square in _description.Static.PositionCollisions)
         {
-            for (int inX = 0; inX < square.Width / 16; inX++)
+            for (var inX = 0; inX < square.Width / 16; inX++)
             {
-                for (int inY = 0; inY < square.Height / 16; inY++)
+                for (var inY = 0; inY < square.Height / 16; inY++)
                 {
                     var position = new Vector3I(square.X / 16 + inX, square.Y / 16 + inY, 0);
                     _octree.Insert(position, 1);
-                    _voxels.Add(position, 1);
+                    _voxels.TryAdd(position, 1);
                 }
             }
         }

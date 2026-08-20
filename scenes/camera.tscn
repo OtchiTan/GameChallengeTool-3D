@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://dmqnt6n4qf46b"]
+
+[ext_resource type="Script" uid="uid://cnuko0kkspaqb" path="res://scripts/camera.gd" id="1_cvpoc"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_k6aki"]
+
+[node name="Camera" type="CharacterBody3D" unique_id=236896310 node_paths=PackedStringArray("camera")]
+script = ExtResource("1_cvpoc")
+camera = NodePath("Camera3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=14260683]
+shape = SubResource("SphereShape3D_k6aki")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1449935635]
+fov = 110.0

@@ -4,6 +4,10 @@
 [ext_resource type="Script" uid="uid://b7wsoqn7xfgal" path="res://scripts/LevelParser.cs" id="2_jyhfs"]
 [ext_resource type="ArrayMesh" uid="uid://boklhing5o5m5" path="res://data/cube.obj" id="2_sugp2"]
 [ext_resource type="Script" uid="uid://x4v8sbwmngyv" path="res://scripts/LevelRenderer.cs" id="3_tbgi4"]
+[ext_resource type="PackedScene" uid="uid://dmqnt6n4qf46b" path="res://scenes/camera.tscn" id="5_tbgi4"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_msi8u"]
+frequency = 1.0
 
 [sub_resource type="MultiMesh" id="MultiMesh_k6aki"]
 transform_format = 1
@@ -14,6 +18,7 @@ mesh = ExtResource("2_sugp2")
 [node name="LevelGenerator" type="Node3D" parent="." unique_id=748302552 node_paths=PackedStringArray("LevelRenderer")]
 script = ExtResource("2_0wfyh")
 LevelRenderer = NodePath("../LevelRenderer")
+Noise = SubResource("FastNoiseLite_msi8u")
 metadata/_custom_type_script = "uid://dwex06qxe1psd"
 
 [node name="LevelParser" type="Node" parent="LevelGenerator" unique_id=1212082423 node_paths=PackedStringArray("LevelGenerator")]
@@ -31,8 +36,8 @@ multimesh = SubResource("MultiMesh_k6aki")
 
 [node name="Lights" type="Node" parent="." unique_id=1099950368]
 
-[node name="Camera3D" type="Camera3D" parent="Lights" unique_id=1679676165]
-transform = Transform3D(0.9252751, 0, -0.3792969, 0, 1, 0, 0.3792969, 0, 0.9252751, 27.00013, 20.566917, 45.95625)
-fov = 110.0
+[node name="Camera" parent="Lights" unique_id=236896310 instance=ExtResource("5_tbgi4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.00013, 20.566917, 45.95625)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lights" unique_id=955697983]
+transform = Transform3D(0.9555655, -0.22484411, 0.19063061, -0.29247856, -0.64253074, 0.70824486, -0.03675865, -0.7325295, -0.67974204, 193.8512, 101.56299, 0)

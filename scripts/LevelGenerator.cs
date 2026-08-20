@@ -7,7 +7,13 @@ namespace Mario3D.scripts;
 public partial class LevelGenerator : Node3D
 {
     [Export] public LevelRenderer LevelRenderer { get; set; }
-    
+
+    [Export, ExportGroup("Generation Parameter")]
+    public int LevelWidth { get; set; } = 2;
+
+    [Export, ExportGroup("Generation Parameter")]
+    public FastNoiseLite Noise { get; set; }
+
     public override void _Ready()
     {
     }
@@ -16,10 +22,26 @@ public partial class LevelGenerator : Node3D
     {
     }
 
-   public void GenerateLevel(Dictionary<Vector3I, int> voxels)
+    public void GenerateLevel(LevelDescription description, Dictionary<Vector3I, int> voxels)
     {
-        
-        
+        for (var x = 0; x < description.LevelCols / 16; x++)
+        {
+            for (var y = 0; y < description.LevelRows / 16; y++)
+            {
+                var position = new Vector3I(x, y, 0);
+
+                if (!voxels.TryGetValue(position, out var voxel) || voxel == 0) continue;
+
+                for (var z = -LevelWidth; z < LevelWidth; z++)
+                {
+                    GD.Print(Noise.GetNoise3D(x, y, z));
+                    if (Noise.GetNoise3D(x, y, z) > 0.0F) continue;
+
+                    voxels.TryAdd(new Vector3I(x, y, z), voxel);
+                }
+            }
+        }
+
         LevelRenderer.DrawVoxels(voxels);
     }
 }
