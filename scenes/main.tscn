@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://ciaqdpjaa163w"]
+
+[ext_resource type="Script" uid="uid://dwex06qxe1psd" path="res://scripts/LevelGenerator.cs" id="2_0wfyh"]
+[ext_resource type="Script" uid="uid://b7wsoqn7xfgal" path="res://scripts/LevelParser.cs" id="2_jyhfs"]
+[ext_resource type="ArrayMesh" uid="uid://boklhing5o5m5" path="res://data/cube.obj" id="2_sugp2"]
+[ext_resource type="Script" uid="uid://x4v8sbwmngyv" path="res://scripts/LevelRenderer.cs" id="3_tbgi4"]
+
+[sub_resource type="MultiMesh" id="MultiMesh_k6aki"]
+transform_format = 1
+mesh = ExtResource("2_sugp2")
+
+[node name="Main" type="Node3D" unique_id=1665535212]
+
+[node name="LevelGenerator" type="Node3D" parent="." unique_id=748302552 node_paths=PackedStringArray("LevelRenderer")]
+script = ExtResource("2_0wfyh")
+LevelRenderer = NodePath("../LevelRenderer")
+metadata/_custom_type_script = "uid://dwex06qxe1psd"
+
+[node name="LevelParser" type="Node" parent="LevelGenerator" unique_id=1212082423 node_paths=PackedStringArray("LevelGenerator")]
+script = ExtResource("2_jyhfs")
+LevelGenerator = NodePath("..")
+metadata/_custom_type_script = "uid://b7wsoqn7xfgal"
+
+[node name="LevelRenderer" type="Node3D" parent="." unique_id=403807449 node_paths=PackedStringArray("MeshInstance")]
+script = ExtResource("3_tbgi4")
+MeshInstance = NodePath("MultiMeshInstance3D")
+metadata/_custom_type_script = "uid://x4v8sbwmngyv"
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="LevelRenderer" unique_id=1978406769]
+multimesh = SubResource("MultiMesh_k6aki")
+
+[node name="Lights" type="Node" parent="." unique_id=1099950368]
+
+[node name="Camera3D" type="Camera3D" parent="Lights" unique_id=1679676165]
+transform = Transform3D(0.9252751, 0, -0.3792969, 0, 1, 0, 0.3792969, 0, 0.9252751, 27.00013, 20.566917, 45.95625)
+fov = 110.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lights" unique_id=955697983]

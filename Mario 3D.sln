@@ -1,0 +1,19 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mario 3D", "Mario 3D.csproj", "{AFA43C0C-54F4-4643-B776-266A97015A5A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	ExportDebug|Any CPU = ExportDebug|Any CPU
+	ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AFA43C0C-54F4-4643-B776-266A97015A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFA43C0C-54F4-4643-B776-266A97015A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFA43C0C-54F4-4643-B776-266A97015A5A}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{AFA43C0C-54F4-4643-B776-266A97015A5A}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{AFA43C0C-54F4-4643-B776-266A97015A5A}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{AFA43C0C-54F4-4643-B776-266A97015A5A}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+	EndGlobalSection
+EndGlobal
