@@ -2,22 +2,32 @@
 
 [ext_resource type="Script" uid="uid://dwex06qxe1psd" path="res://scripts/LevelGenerator.cs" id="2_0wfyh"]
 [ext_resource type="Script" uid="uid://b7wsoqn7xfgal" path="res://scripts/LevelParser.cs" id="2_jyhfs"]
-[ext_resource type="ArrayMesh" uid="uid://boklhing5o5m5" path="res://data/cube.obj" id="2_sugp2"]
 [ext_resource type="Script" uid="uid://x4v8sbwmngyv" path="res://scripts/LevelRenderer.cs" id="3_tbgi4"]
+[ext_resource type="Texture2D" uid="uid://ct5fljjr6h5xv" path="res://data/breakBlocRed.png" id="4_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://dmqnt6n4qf46b" path="res://scenes/camera.tscn" id="5_tbgi4"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_msi8u"]
-frequency = 1.0
+frequency = 0.2
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sljby"]
+atlas = ExtResource("4_tbgi4")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3crub"]
+albedo_texture = SubResource("AtlasTexture_sljby")
+
+[sub_resource type="BoxMesh" id="BoxMesh_xjg2u"]
+material = SubResource("StandardMaterial3D_3crub")
 
 [sub_resource type="MultiMesh" id="MultiMesh_k6aki"]
 transform_format = 1
-mesh = ExtResource("2_sugp2")
+mesh = SubResource("BoxMesh_xjg2u")
 
 [node name="Main" type="Node3D" unique_id=1665535212]
 
 [node name="LevelGenerator" type="Node3D" parent="." unique_id=748302552 node_paths=PackedStringArray("LevelRenderer")]
 script = ExtResource("2_0wfyh")
 LevelRenderer = NodePath("../LevelRenderer")
+LevelWidth = 4
 Noise = SubResource("FastNoiseLite_msi8u")
 metadata/_custom_type_script = "uid://dwex06qxe1psd"
 
@@ -26,8 +36,9 @@ script = ExtResource("2_jyhfs")
 LevelGenerator = NodePath("..")
 metadata/_custom_type_script = "uid://b7wsoqn7xfgal"
 
-[node name="LevelRenderer" type="Node3D" parent="." unique_id=403807449 node_paths=PackedStringArray("MeshInstance")]
+[node name="LevelRenderer" type="Node3D" parent="." unique_id=403807449 node_paths=PackedStringArray("MultiMeshInstance", "MeshInstance")]
 script = ExtResource("3_tbgi4")
+MultiMeshInstance = NodePath("MultiMeshInstance3D")
 MeshInstance = NodePath("MultiMeshInstance3D")
 metadata/_custom_type_script = "uid://x4v8sbwmngyv"
 

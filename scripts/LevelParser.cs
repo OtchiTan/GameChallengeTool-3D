@@ -9,7 +9,6 @@ public partial class LevelParser : Node
 {
     private LevelDescription _description;
 
-    private Octree _octree = new();
     private Dictionary<Vector3I, int> _voxels = new();
 
     [Export] public LevelGenerator LevelGenerator { get; set; }
@@ -33,7 +32,6 @@ public partial class LevelParser : Node
                 for (var inY = 0; inY < square.Height / 16; inY++)
                 {
                     var position = new Vector3I(square.X / 16 + inX, square.Y / 16 + inY, 0);
-                    _octree.Insert(position, 1);
                     _voxels.TryAdd(position, 1);
                 }
             }
