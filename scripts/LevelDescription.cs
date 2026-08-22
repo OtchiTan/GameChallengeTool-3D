@@ -11,12 +11,9 @@ public class Square
     [JsonPropertyName("x")] public int Y { get; set; }
     [JsonPropertyName("y")] public int X { get; set; }
 
-    public void Scale(int scaleFactor)
+    public Vector3I GetOrigin()
     {
-        Width /= scaleFactor;
-        Height /= scaleFactor;
-        X /= scaleFactor;
-        Y /= scaleFactor;
+        return new Vector3I(X / 16, -Y / 16, 0);
     }
 }
 

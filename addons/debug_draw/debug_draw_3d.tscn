@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://cqdxip34ig1fa"]
+
+[ext_resource type="Script" uid="uid://cbeyfuf0ykgq7" path="res://addons/debug_draw/debug_draw_3d.gd" id="1"]
+
+[node name="DebugDraw3D" type="Node3D" unique_id=1516371635]
+script = ExtResource("1")
+
+[node name="RectMesh" type="MultiMeshInstance3D" parent="." unique_id=379403825]
+
+[node name="BoxMesh" type="MultiMeshInstance3D" parent="." unique_id=947741398]
+
+[node name="SphereMesh" type="MultiMeshInstance3D" parent="." unique_id=1512406401]
+
+[node name="CylinderMesh" type="MultiMeshInstance3D" parent="." unique_id=2034961018]
+
+[node name="ConeMesh" type="MultiMeshInstance3D" parent="." unique_id=97658323]
+
+[node name="LineMesh" type="MultiMeshInstance3D" parent="." unique_id=2108225613]
+
+[node name="NormalLineMesh" type="MultiMeshInstance3D" parent="." unique_id=1622304695]
+
+[node name="JointMesh" type="MultiMeshInstance3D" parent="." unique_id=493114107]
+
+[node name="NormalJointMesh" type="MultiMeshInstance3D" parent="." unique_id=1582726000]

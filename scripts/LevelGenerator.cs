@@ -7,6 +7,7 @@ namespace Mario3D.scripts;
 public partial class LevelGenerator : Node3D
 {
     [Export] public LevelRenderer LevelRenderer { get; set; }
+    [Export] public LevelPathfinder LevelPathfinder { get; set; }
 
     [Export, ExportGroup("Generation Parameter")]
     public int LevelWidth { get; set; } = 2;
@@ -34,7 +35,6 @@ public partial class LevelGenerator : Node3D
 
                 for (var z = -LevelWidth; z < LevelWidth; z++)
                 {
-                    GD.Print(Noise.GetNoise3D(x, y, z));
                     if (Noise.GetNoise3D(x, y, z) > 0.0F) continue;
 
                     voxels.TryAdd(new Vector3I(x, y, z), voxel);
@@ -43,5 +43,10 @@ public partial class LevelGenerator : Node3D
         }
 
         LevelRenderer.DrawVoxels(voxels);
+
+        var path = LevelPathfinder.FindPath(
+            description.Static.Spawn.GetOrigin(),
+            description.Static.End.GetOrigin(),
+            voxels);
     }
 }
