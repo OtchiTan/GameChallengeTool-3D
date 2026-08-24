@@ -27,7 +27,7 @@ public partial class LevelRenderer : Node3D
                 for (var z = 0; z < levelSize.Z; z++)
                 {
                     var index = new Vector3I(x, y, z);
-                    var voxel = voxels.GetVoxel(index);
+                    var voxel = voxels[index];
 
                     if (voxel == 0) continue;
 

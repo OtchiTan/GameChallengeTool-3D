@@ -1,12 +1,11 @@
-using System;
 using Godot;
 
 namespace Mario3D.scripts.Voxel;
 
 public interface IVoxelDatabase
 {
-    public bool SetVoxel(Vector3I index, int voxel);
-    public int GetVoxel(Vector3I index);
+    public bool SetVoxel(int x, int y, int z, int voxel);
+    public int GetVoxel(int x, int y, int z);
 }
 
 public enum VoxelDatabaseType
@@ -31,7 +30,7 @@ public partial class VoxelDatabase : Resource
         InitDatabase(voxelDatabaseType);
     }
 
-    public void InitDatabase(VoxelDatabaseType voxelDatabaseType)
+    private void InitDatabase(VoxelDatabaseType voxelDatabaseType)
     {
         VoxelDatabaseType = voxelDatabaseType;
 
@@ -42,24 +41,24 @@ public partial class VoxelDatabase : Resource
         };
     }
 
-    public bool SetVoxel(Vector3I index, int voxel)
+    private bool SetVoxel(Vector3I index, int voxel)
     {
-        return _voxelDatabase.SetVoxel(index, voxel);
+        return _voxelDatabase.SetVoxel(index.X, index.Y, index.Z, voxel);
     }
 
-    public bool SetVoxel(int x, int y, int z, int voxel)
+    private bool SetVoxel(int x, int y, int z, int voxel)
     {
-        return _voxelDatabase.SetVoxel(new Vector3I(x, y, z), voxel);
+        return _voxelDatabase.SetVoxel(x, y, z, voxel);
     }
 
-    public int GetVoxel(Vector3I index)
+    private int GetVoxel(Vector3I index)
     {
-        return _voxelDatabase.GetVoxel(index);
+        return _voxelDatabase.GetVoxel(index.X, index.Y, index.Z);
     }
 
-    public int GetVoxel(int x, int y, int z)
+    private int GetVoxel(int x, int y, int z)
     {
-        return _voxelDatabase.GetVoxel(new Vector3I(x, y, z));
+        return _voxelDatabase.GetVoxel(x, y, z);
     }
 
     public int this[Vector3I index]

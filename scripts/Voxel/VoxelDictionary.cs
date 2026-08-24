@@ -7,14 +7,14 @@ public class VoxelDictionary : IVoxelDatabase
 {
     private readonly Dictionary<Vector3I, int> _voxels = new();
 
-    public bool SetVoxel(Vector3I index, int voxel)
+    public bool SetVoxel(int x, int y, int z, int voxel)
     {
-        _voxels[index] = voxel;
+        _voxels[new Vector3I(x, y, z)] = voxel;
         return true;
     }
 
-    public int GetVoxel(Vector3I index)
+    public int GetVoxel(int x, int y, int z)
     {
-        return _voxels.GetValueOrDefault(index, 0);
+        return _voxels.GetValueOrDefault(new Vector3I(x, y, z), 0);
     }
 }

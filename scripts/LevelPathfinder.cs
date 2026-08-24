@@ -41,7 +41,7 @@ public partial class LevelPathfinder : Node
         _path.Clear();
 
 
-        if (voxels.GetVoxel(start) != 0 || voxels.GetVoxel(end) != 0)
+        if (voxels[start] != 0 || voxels[end] != 0)
             return _path;
 
         var openSet = new PriorityQueue<Vector3I, float>();
@@ -66,7 +66,7 @@ public partial class LevelPathfinder : Node
                 Vector3I neighbor = current + dir;
 
 
-                if (voxels.GetVoxel(neighbor) != 0)
+                if (voxels[neighbor] != 0)
                     continue;
 
                 float tentativeGScore = gScore[current] + 1;

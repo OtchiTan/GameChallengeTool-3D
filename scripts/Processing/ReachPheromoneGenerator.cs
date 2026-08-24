@@ -28,7 +28,7 @@ public partial class ReachPheromoneGenerator : Resource
 
                     var value = 100;
 
-                    for (var oy = y - 1; oy < 0; oy--)
+                    for (var oy = y + 1; oy < levelSize.Y; oy++)
                     {
                         if (levelVoxels[x, oy, z] > 0)
                             break;
@@ -43,12 +43,45 @@ public partial class ReachPheromoneGenerator : Resource
 
                             var vX = Mathf.Max(0, valueX);
                             pheromoneVoxels[ox, oy, z] += vX;
+
+                            for (var ooy = oy - 1; ooy > 0; ooy--)
+                            {
+                                if (levelVoxels[ox, ooy, z] > 0)
+                                    break;
+
+                                pheromoneVoxels[ooy, ox, z] += vX;
+                            }
+
+                            valueX--;
                         }
+
+
+                        valueX = value;
+
+                        for (var ox = x; ox < x + value; ox++)
+                        {
+                            if (ox >= levelSize.X || levelVoxels[ox, oy, z] > 0)
+                                break;
+
+                            var vX = Mathf.Max(0, valueX);
+                            pheromoneVoxels[ox, oy, z] += vX;
+
+                            for (var ooy = oy - 1; ooy > 0; ooy--)
+                            {
+                                if (levelVoxels[ox, ooy, z] > 0)
+                                    break;
+
+                                pheromoneVoxels[ooy, ox, z] += vX;
+                            }
+
+                            valueX--;
+                        }
+
+                        value--;
                     }
                 }
             }
         }
-
 
         return pheromoneVoxels;
     }

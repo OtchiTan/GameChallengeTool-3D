@@ -28,7 +28,7 @@ public partial class LevelParser : Resource
                 for (var inY = 0; inY < square.Height / 16; inY++)
                 {
                     var position = new Vector3I(square.X / 16 + inX, levelHeight - square.Y / 16 + inY, 0);
-                    voxels.SetVoxel(position, 1);
+                    voxels[position] = 1;
                 }
             }
         }

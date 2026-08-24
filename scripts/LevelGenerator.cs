@@ -50,7 +50,7 @@ public partial class LevelGenerator : Node3D
             {
                 var position = new Vector3I(x, y, 0);
 
-                var voxel = VoxelDatabase.GetVoxel(position);
+                var voxel = VoxelDatabase[position];
 
                 if (voxel == 0) continue;
 
@@ -58,22 +58,16 @@ public partial class LevelGenerator : Node3D
                 {
                     if (Noise.GetNoise3D(x, y, z) > 0.0F) continue;
 
-                    newDatabase.SetVoxel(new Vector3I(x, y, z), voxel);
+                    newDatabase[x, y, z] = voxel;
                 }
             }
         }
 
-        var test = new VoxelDatabase();
-        test[0, 5, 2] = 5;
-        test[0, 5, 2] += 3;
-
-        GD.Print(test[0, 5, 2]);
-
         VoxelDatabase = newDatabase;
 
-        LevelRenderer?.DrawVoxels(levelSize, VoxelDatabase);
+        LevelRenderer?.DrawVoxels(new Vector3I(levelSize.X, 5, levelSize.Z), VoxelDatabase);
 
-        //ReachPheromoneGenerator.GenerateReachPheromoneMap(levelSize, VoxelDatabase);
+        var reach = ReachPheromoneGenerator.GenerateReachPheromoneMap(levelSize, VoxelDatabase);
 
         var path = LevelPathfinder.FindPath(
             description.Static.Spawn.GetOrigin(),
