@@ -1,8 +1,7 @@
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Godot;
 
-namespace Mario3D.scripts;
+namespace Mario3D.scripts.LevelInput;
 
 public class Square
 {
@@ -13,7 +12,7 @@ public class Square
 
     public Vector3I GetOrigin()
     {
-        return new Vector3I(X / 16, -Y / 16, 0);
+        return new Vector3I(X / 16, Y / 16, 0);
     }
 }
 

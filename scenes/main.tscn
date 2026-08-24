@@ -1,12 +1,26 @@
 [gd_scene format=3 uid="uid://ciaqdpjaa163w"]
 
 [ext_resource type="Script" uid="uid://dwex06qxe1psd" path="res://scripts/LevelGenerator.cs" id="2_0wfyh"]
-[ext_resource type="Script" uid="uid://b7wsoqn7xfgal" path="res://scripts/LevelParser.cs" id="2_jyhfs"]
+[ext_resource type="Script" uid="uid://b7wsoqn7xfgal" path="res://scripts/LevelInput/LevelParser.cs" id="2_jyhfs"]
+[ext_resource type="Script" uid="uid://ctrok4a3byfv0" path="res://scripts/Processing/ReachPheromoneGenerator.cs" id="3_85g3d"]
 [ext_resource type="Script" uid="uid://bba8vjfyh6eow" path="res://scripts/LevelPathfinder.cs" id="3_o6xl0"]
-[ext_resource type="Script" uid="uid://x4v8sbwmngyv" path="res://scripts/LevelRenderer.cs" id="3_tbgi4"]
+[ext_resource type="Script" uid="uid://x4v8sbwmngyv" path="res://scripts/Voxel/LevelRenderer.cs" id="3_tbgi4"]
+[ext_resource type="Script" uid="uid://c8xpqsbuv8f8c" path="res://scripts/Voxel/VoxelDatabase.cs" id="4_85g3d"]
 [ext_resource type="ArrayMesh" uid="uid://boklhing5o5m5" path="res://data/cube.obj" id="4_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://dmqnt6n4qf46b" path="res://scenes/camera.tscn" id="5_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://cqdxip34ig1fa" path="res://addons/debug_draw/debug_draw_3d.tscn" id="6_tefeu"]
+
+[sub_resource type="Resource" id="Resource_t2vqn"]
+script = ExtResource("2_jyhfs")
+metadata/_custom_type_script = "uid://b7wsoqn7xfgal"
+
+[sub_resource type="Resource" id="Resource_6ksr0"]
+script = ExtResource("3_85g3d")
+metadata/_custom_type_script = "uid://ctrok4a3byfv0"
+
+[sub_resource type="Resource" id="Resource_jl41k"]
+script = ExtResource("4_85g3d")
+metadata/_custom_type_script = "uid://c8xpqsbuv8f8c"
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_msi8u"]
 frequency = 0.2
@@ -19,16 +33,14 @@ mesh = ExtResource("4_tbgi4")
 
 [node name="LevelGenerator" type="Node3D" parent="." unique_id=748302552 node_paths=PackedStringArray("LevelRenderer", "LevelPathfinder")]
 script = ExtResource("2_0wfyh")
+LevelParser = SubResource("Resource_t2vqn")
 LevelRenderer = NodePath("../LevelRenderer")
 LevelPathfinder = NodePath("LevelPathfinder")
+ReachPheromoneGenerator = SubResource("Resource_6ksr0")
+VoxelDatabase = SubResource("Resource_jl41k")
 LevelWidth = 4
 Noise = SubResource("FastNoiseLite_msi8u")
 metadata/_custom_type_script = "uid://dwex06qxe1psd"
-
-[node name="LevelParser" type="Node" parent="LevelGenerator" unique_id=1212082423 node_paths=PackedStringArray("LevelGenerator")]
-script = ExtResource("2_jyhfs")
-LevelGenerator = NodePath("..")
-metadata/_custom_type_script = "uid://b7wsoqn7xfgal"
 
 [node name="LevelPathfinder" type="Node" parent="LevelGenerator" unique_id=1444487313 node_paths=PackedStringArray("DebugDraw")]
 script = ExtResource("3_o6xl0")

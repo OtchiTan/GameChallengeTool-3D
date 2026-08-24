@@ -1,41 +1,39 @@
-using System.Collections.Generic;
 using Godot;
 using System.Text.Json;
+using Mario3D.scripts.Voxel;
 
-namespace Mario3D.scripts;
+namespace Mario3D.scripts.LevelInput;
 
 [GlobalClass]
-public partial class LevelParser : Node
+public partial class LevelParser : Resource
 {
     private LevelDescription _description;
 
-    private Dictionary<Vector3I, int> _voxels = new();
+    public LevelParser()
+    {
+        _description = new LevelDescription();
+    }
 
-    [Export] public LevelGenerator LevelGenerator { get; set; }
-
-    public override void _Ready()
+    public LevelDescription ParseLevelDescription(VoxelDatabase voxels)
     {
         const string path = "res://data/level.json";
         _description = LoadJson<LevelDescription>(path);
 
-        ParseLevelDescription();
+        var levelHeight = _description.LevelRows / 16;
 
-        LevelGenerator.GenerateLevel(_description, _voxels);
-    }
-
-    private void ParseLevelDescription()
-    {
         foreach (var square in _description.Static.PositionCollisions)
         {
             for (var inX = 0; inX < square.Width / 16; inX++)
             {
                 for (var inY = 0; inY < square.Height / 16; inY++)
                 {
-                    var position = new Vector3I(square.X / 16 + inX, square.Y / 16 + inY, 0);
-                    _voxels.TryAdd(position, 1);
+                    var position = new Vector3I(square.X / 16 + inX, levelHeight - square.Y / 16 + inY, 0);
+                    voxels.SetVoxel(position, 1);
                 }
             }
         }
+
+        return _description;
     }
 
 

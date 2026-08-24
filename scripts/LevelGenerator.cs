@@ -1,52 +1,83 @@
-using System.Collections.Generic;
 using Godot;
+using Mario3D.scripts.LevelInput;
+using Mario3D.scripts.Processing;
+using Mario3D.scripts.Voxel;
 
 namespace Mario3D.scripts;
 
 [GlobalClass]
 public partial class LevelGenerator : Node3D
 {
-    [Export] public LevelRenderer LevelRenderer { get; set; }
-    [Export] public LevelPathfinder LevelPathfinder { get; set; }
+    [Export] public LevelParser LevelParser;
+    [Export] public LevelRenderer LevelRenderer;
+    [Export] public LevelPathfinder LevelPathfinder;
+    [Export] public ReachPheromoneGenerator ReachPheromoneGenerator;
+    [Export] public VoxelDatabase VoxelDatabase;
 
     [Export, ExportGroup("Generation Parameter")]
     public int LevelWidth { get; set; } = 2;
 
     [Export, ExportGroup("Generation Parameter")]
-    public FastNoiseLite Noise { get; set; }
+    public FastNoiseLite Noise;
 
     public override void _Ready()
     {
+        LevelParser ??= new LevelParser();
+        LevelPathfinder ??= new LevelPathfinder();
+        ReachPheromoneGenerator ??= new ReachPheromoneGenerator();
+        Noise ??= new FastNoiseLite();
+        VoxelDatabase ??= new VoxelDatabase();
+
+
+        var levelDescription = LevelParser.ParseLevelDescription(VoxelDatabase);
+
+        GenerateLevel(levelDescription);
     }
 
     public override void _Process(double delta)
     {
     }
 
-    public void GenerateLevel(LevelDescription description, Dictionary<Vector3I, int> voxels)
+    private void GenerateLevel(LevelDescription description)
     {
-        for (var x = 0; x < description.LevelCols / 16; x++)
+        var levelSize = new Vector3I(description.LevelCols / 16, description.LevelRows / 16, LevelWidth);
+
+        var newDatabase = new VoxelDatabase(VoxelDatabase.VoxelDatabaseType);
+
+        for (var x = 0; x < levelSize.X; x++)
         {
-            for (var y = 0; y < description.LevelRows / 16; y++)
+            for (var y = 0; y < levelSize.Y; y++)
             {
                 var position = new Vector3I(x, y, 0);
 
-                if (!voxels.TryGetValue(position, out var voxel) || voxel == 0) continue;
+                var voxel = VoxelDatabase.GetVoxel(position);
 
-                for (var z = -LevelWidth; z < LevelWidth; z++)
+                if (voxel == 0) continue;
+
+                for (var z = 0; z < levelSize.Z; z++)
                 {
                     if (Noise.GetNoise3D(x, y, z) > 0.0F) continue;
 
-                    voxels.TryAdd(new Vector3I(x, y, z), voxel);
+                    newDatabase.SetVoxel(new Vector3I(x, y, z), voxel);
                 }
             }
         }
 
-        LevelRenderer.DrawVoxels(voxels);
+        var test = new VoxelDatabase();
+        test[0, 5, 2] = 5;
+        test[0, 5, 2] += 3;
+
+        GD.Print(test[0, 5, 2]);
+
+        VoxelDatabase = newDatabase;
+
+        LevelRenderer?.DrawVoxels(levelSize, VoxelDatabase);
+
+        //ReachPheromoneGenerator.GenerateReachPheromoneMap(levelSize, VoxelDatabase);
 
         var path = LevelPathfinder.FindPath(
             description.Static.Spawn.GetOrigin(),
             description.Static.End.GetOrigin(),
-            voxels);
+            VoxelDatabase);
     }
 }

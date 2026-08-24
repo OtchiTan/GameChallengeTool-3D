@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using Mario3D.scripts.Voxel;
 
 namespace Mario3D.scripts;
 
@@ -11,8 +12,7 @@ public partial class LevelPathfinder : Node
 
     private List<Vector3I> _path = [];
 
-    // Direction des 6 voisins adjacents (haut, bas, gauche, droite, avant, arrière)
-    private static readonly Vector3I[] Directions = 
+    private static readonly Vector3I[] Directions =
     [
         new(1, 0, 0), new(-1, 0, 0),
         new(0, 1, 0), new(0, -1, 0),
@@ -25,7 +25,7 @@ public partial class LevelPathfinder : Node
 
     public override void _Process(double delta)
     {
-        for (int i = 0; i < _path.Count; i++)
+        for (var i = 0; i < _path.Count; i++)
         {
             if (i == 0) continue;
 
@@ -36,12 +36,12 @@ public partial class LevelPathfinder : Node
         }
     }
 
-    public List<Vector3I> FindPath(Vector3I start, Vector3I end, Dictionary<Vector3I, int> voxels)
+    public List<Vector3I> FindPath(Vector3I start, Vector3I end, VoxelDatabase voxels)
     {
         _path.Clear();
 
-        // Si le point de départ ou d'arrivée se trouve dans un obstacle
-        if (voxels.ContainsKey(start) || voxels.ContainsKey(end))
+
+        if (voxels.GetVoxel(start) != 0 || voxels.GetVoxel(end) != 0)
             return _path;
 
         var openSet = new PriorityQueue<Vector3I, float>();
@@ -65,29 +65,28 @@ public partial class LevelPathfinder : Node
             {
                 Vector3I neighbor = current + dir;
 
-                // Si le dictionnaire contient la clé, c'est un obstacle infranchissable
-                if (voxels.ContainsKey(neighbor))
+
+                if (voxels.GetVoxel(neighbor) != 0)
                     continue;
 
-                float tentativeGScore = gScore[current] + 1; // Coût de déplacement fixe de 1
+                float tentativeGScore = gScore[current] + 1;
 
                 if (tentativeGScore < gScore.GetValueOrDefault(neighbor, float.MaxValue))
                 {
                     cameFrom[neighbor] = current;
                     gScore[neighbor] = tentativeGScore;
                     float fScore = tentativeGScore + Heuristic(neighbor, end);
-                    
+
                     openSet.Enqueue(neighbor, fScore);
                 }
             }
         }
 
-        return _path; // Aucun chemin trouvé
+        return _path;
     }
 
     private static float Heuristic(Vector3I a, Vector3I b)
     {
-        // Distance de Manhattan 3D
         return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y) + Math.Abs(a.Z - b.Z);
     }
 
@@ -99,6 +98,7 @@ public partial class LevelPathfinder : Node
             current = cameFrom[current];
             totalPath.Add(current);
         }
+
         totalPath.Reverse();
         return totalPath;
     }
