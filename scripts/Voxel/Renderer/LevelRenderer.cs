@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using Godot;
 
-namespace Mario3D.scripts.Voxel;
+namespace Mario3D.scripts.Voxel.Renderer;
 
 [GlobalClass]
 public partial class LevelRenderer : Node3D
@@ -29,14 +28,19 @@ public partial class LevelRenderer : Node3D
                     var index = new Vector3I(x, y, z);
                     var voxel = voxels[index];
 
-                    if (voxel == 0) continue;
-
-                    var transform = new Transform3D(Basis.Identity, new Vector3(index.X, index.Y, index.Z));
-                    MeshInstance.Multimesh.SetInstanceTransform(i, transform);
+                    DrawVoxel(i, index, voxel);
 
                     i++;
                 }
             }
         }
+    }
+
+    public virtual void DrawVoxel(int instance, Vector3I index, int voxel)
+    {
+        if (voxel == 0) return;
+
+        var transform = new Transform3D(Basis.Identity, new Vector3(index.X, index.Y, index.Z));
+        MeshInstance.Multimesh.SetInstanceTransform(instance, transform);
     }
 }

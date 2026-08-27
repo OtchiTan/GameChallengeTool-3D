@@ -2,6 +2,7 @@ using Godot;
 using Mario3D.scripts.LevelInput;
 using Mario3D.scripts.Processing;
 using Mario3D.scripts.Voxel;
+using Mario3D.scripts.Voxel.Renderer;
 
 namespace Mario3D.scripts;
 
@@ -10,6 +11,7 @@ public partial class LevelGenerator : Node3D
 {
     [Export] public LevelParser LevelParser;
     [Export] public LevelRenderer LevelRenderer;
+    [Export] public PheromoneRenderer ReachRenderer;
     [Export] public LevelPathfinder LevelPathfinder;
     [Export] public ReachPheromoneGenerator ReachPheromoneGenerator;
     [Export] public VoxelDatabase VoxelDatabase;
@@ -56,7 +58,7 @@ public partial class LevelGenerator : Node3D
 
                 for (var z = 0; z < levelSize.Z; z++)
                 {
-                    if (Noise.GetNoise3D(x, y, z) > 0.0F) continue;
+                    //if (Noise.GetNoise3D(x, y, z) > 0.0F) continue;
 
                     newDatabase[x, y, z] = voxel;
                 }
@@ -65,13 +67,15 @@ public partial class LevelGenerator : Node3D
 
         VoxelDatabase = newDatabase;
 
-        LevelRenderer?.DrawVoxels(new Vector3I(levelSize.X, 5, levelSize.Z), VoxelDatabase);
+        LevelRenderer?.DrawVoxels(levelSize, VoxelDatabase);
 
         var reach = ReachPheromoneGenerator.GenerateReachPheromoneMap(levelSize, VoxelDatabase);
+
+        ReachRenderer?.DrawVoxels(levelSize, reach);
 
         var path = LevelPathfinder.FindPath(
             description.Static.Spawn.GetOrigin(),
             description.Static.End.GetOrigin(),
-            VoxelDatabase);
+            reach);
     }
 }

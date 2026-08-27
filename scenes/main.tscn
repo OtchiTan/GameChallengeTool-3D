@@ -4,11 +4,11 @@
 [ext_resource type="Script" uid="uid://b7wsoqn7xfgal" path="res://scripts/LevelInput/LevelParser.cs" id="2_jyhfs"]
 [ext_resource type="Script" uid="uid://ctrok4a3byfv0" path="res://scripts/Processing/ReachPheromoneGenerator.cs" id="3_85g3d"]
 [ext_resource type="Script" uid="uid://bba8vjfyh6eow" path="res://scripts/LevelPathfinder.cs" id="3_o6xl0"]
-[ext_resource type="Script" uid="uid://x4v8sbwmngyv" path="res://scripts/Voxel/LevelRenderer.cs" id="3_tbgi4"]
+[ext_resource type="Script" uid="uid://x4v8sbwmngyv" path="res://scripts/Voxel/Renderer/LevelRenderer.cs" id="3_tbgi4"]
 [ext_resource type="Script" uid="uid://c8xpqsbuv8f8c" path="res://scripts/Voxel/VoxelDatabase.cs" id="4_85g3d"]
-[ext_resource type="ArrayMesh" uid="uid://boklhing5o5m5" path="res://data/cube.obj" id="4_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://dmqnt6n4qf46b" path="res://scenes/camera.tscn" id="5_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://cqdxip34ig1fa" path="res://addons/debug_draw/debug_draw_3d.tscn" id="6_tefeu"]
+[ext_resource type="Script" uid="uid://c34wkukorl84t" path="res://scripts/Voxel/Renderer/PheromoneRenderer.cs" id="7_85g3d"]
 
 [sub_resource type="Resource" id="Resource_t2vqn"]
 script = ExtResource("2_jyhfs")
@@ -25,16 +25,24 @@ metadata/_custom_type_script = "uid://c8xpqsbuv8f8c"
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_msi8u"]
 frequency = 0.2
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_85g3d"]
+vertex_color_use_as_albedo = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_k6aki"]
+material = SubResource("StandardMaterial3D_85g3d")
+
 [sub_resource type="MultiMesh" id="MultiMesh_k6aki"]
 transform_format = 1
-mesh = ExtResource("4_tbgi4")
+use_colors = true
+mesh = SubResource("BoxMesh_k6aki")
 
 [node name="Main" type="Node3D" unique_id=1665535212]
 
-[node name="LevelGenerator" type="Node3D" parent="." unique_id=748302552 node_paths=PackedStringArray("LevelRenderer", "LevelPathfinder")]
+[node name="LevelGenerator" type="Node3D" parent="." unique_id=748302552 node_paths=PackedStringArray("LevelRenderer", "ReachRenderer", "LevelPathfinder")]
 script = ExtResource("2_0wfyh")
 LevelParser = SubResource("Resource_t2vqn")
-LevelRenderer = NodePath("../LevelRenderer")
+LevelRenderer = NodePath("../MeshRenderer")
+ReachRenderer = NodePath("../PheromoneRenderer")
 LevelPathfinder = NodePath("LevelPathfinder")
 ReachPheromoneGenerator = SubResource("Resource_6ksr0")
 VoxelDatabase = SubResource("Resource_jl41k")
@@ -47,12 +55,20 @@ script = ExtResource("3_o6xl0")
 DebugDraw = NodePath("../../Lights/DebugDraw3D")
 metadata/_custom_type_script = "uid://bba8vjfyh6eow"
 
-[node name="LevelRenderer" type="Node3D" parent="." unique_id=403807449 node_paths=PackedStringArray("MeshInstance")]
+[node name="MeshRenderer" type="Node3D" parent="." unique_id=403807449 node_paths=PackedStringArray("MeshInstance")]
 script = ExtResource("3_tbgi4")
 MeshInstance = NodePath("MultiMeshInstance3D")
 metadata/_custom_type_script = "uid://x4v8sbwmngyv"
 
-[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="LevelRenderer" unique_id=1978406769]
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="MeshRenderer" unique_id=1978406769]
+multimesh = SubResource("MultiMesh_k6aki")
+
+[node name="PheromoneRenderer" type="Node3D" parent="." unique_id=369338789 node_paths=PackedStringArray("MeshInstance")]
+script = ExtResource("7_85g3d")
+MeshInstance = NodePath("MultiMeshInstance3D")
+metadata/_custom_type_script = "uid://c34wkukorl84t"
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="PheromoneRenderer" unique_id=1928611541]
 multimesh = SubResource("MultiMesh_k6aki")
 
 [node name="Lights" type="Node" parent="." unique_id=1099950368]

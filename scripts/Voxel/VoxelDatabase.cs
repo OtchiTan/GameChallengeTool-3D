@@ -6,6 +6,8 @@ public interface IVoxelDatabase
 {
     public bool SetVoxel(int x, int y, int z, int voxel);
     public int GetVoxel(int x, int y, int z);
+    public void Normalize(int max);
+    public int CountVoxels();
 }
 
 public enum VoxelDatabaseType
@@ -28,6 +30,16 @@ public partial class VoxelDatabase : Resource
     public VoxelDatabase(VoxelDatabaseType voxelDatabaseType)
     {
         InitDatabase(voxelDatabaseType);
+    }
+
+    public void Normalize(int max)
+    {
+        _voxelDatabase.Normalize(max);
+    }
+
+    public int CountVoxels()
+    {
+        return _voxelDatabase.CountVoxels();
     }
 
     private void InitDatabase(VoxelDatabaseType voxelDatabaseType)

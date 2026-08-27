@@ -41,7 +41,7 @@ public partial class LevelPathfinder : Node
         _path.Clear();
 
 
-        if (voxels[start] != 0 || voxels[end] != 0)
+        if (voxels[start] == 0 || voxels[end] == 0)
             return _path;
 
         var openSet = new PriorityQueue<Vector3I, float>();
@@ -53,7 +53,7 @@ public partial class LevelPathfinder : Node
 
         while (openSet.Count > 0)
         {
-            Vector3I current = openSet.Dequeue();
+            var current = openSet.Dequeue();
 
             if (current == end)
             {
@@ -61,21 +61,21 @@ public partial class LevelPathfinder : Node
                 return _path;
             }
 
-            foreach (Vector3I dir in Directions)
+            foreach (var dir in Directions)
             {
-                Vector3I neighbor = current + dir;
+                var neighbor = current + dir;
 
 
-                if (voxels[neighbor] != 0)
+                if (voxels[neighbor] == 0)
                     continue;
 
-                float tentativeGScore = gScore[current] + 1;
+                var tentativeGScore = gScore[current] + 1;
 
                 if (tentativeGScore < gScore.GetValueOrDefault(neighbor, float.MaxValue))
                 {
                     cameFrom[neighbor] = current;
                     gScore[neighbor] = tentativeGScore;
-                    float fScore = tentativeGScore + Heuristic(neighbor, end);
+                    var fScore = tentativeGScore + Heuristic(neighbor, end);
 
                     openSet.Enqueue(neighbor, fScore);
                 }

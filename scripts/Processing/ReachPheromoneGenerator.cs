@@ -26,62 +26,67 @@ public partial class ReachPheromoneGenerator : Resource
 
                     if (voxel != 0 || belowVoxel == 0) continue;
 
-                    var value = 100;
+                    var value = 6;
 
                     for (var oy = y + 1; oy < levelSize.Y; oy++)
                     {
                         if (levelVoxels[x, oy, z] > 0)
                             break;
 
-                        pheromoneVoxels[x, oy, z] += Mathf.Max(0, value);
+                        pheromoneVoxels[x, oy, z] += value;
 
                         var valueX = value;
-                        for (var ox = x; ox < x - value; ox--)
+
+                        for (var ox = x; ox > x - value; ox--)
                         {
                             if (ox < 0 || levelVoxels[ox, oy, z] > 0)
                                 break;
 
-                            var vX = Mathf.Max(0, valueX);
-                            pheromoneVoxels[ox, oy, z] += vX;
+                            pheromoneVoxels[ox, oy, z] += valueX;
 
-                            for (var ooy = oy - 1; ooy > 0; ooy--)
+                            /*for (var ooy = oy + 1; ooy > levelSize.Y - 1; ooy++)
                             {
                                 if (levelVoxels[ox, ooy, z] > 0)
                                     break;
 
-                                pheromoneVoxels[ooy, ox, z] += vX;
-                            }
+                                pheromoneVoxels[ooy, ox, z] += valueX;
+                            }*/
 
                             valueX--;
                         }
 
-
                         valueX = value;
 
-                        for (var ox = x; ox < x + value; ox++)
+                        /*for (var ox = x; ox < x + value; ox++)
                         {
                             if (ox >= levelSize.X || levelVoxels[ox, oy, z] > 0)
                                 break;
 
-                            var vX = Mathf.Max(0, valueX);
-                            pheromoneVoxels[ox, oy, z] += vX;
+                            pheromoneVoxels[ox, oy, z] += valueX;
 
+                            /*
                             for (var ooy = oy - 1; ooy > 0; ooy--)
                             {
                                 if (levelVoxels[ox, ooy, z] > 0)
                                     break;
 
-                                pheromoneVoxels[ooy, ox, z] += vX;
+                                pheromoneVoxels[ooy, ox, z] += valueX;
                             }
+                            *
 
                             valueX--;
-                        }
+                        }*/
 
                         value--;
+
+                        if (value == 0)
+                            break;
                     }
                 }
             }
         }
+
+        pheromoneVoxels.Normalize(100);
 
         return pheromoneVoxels;
     }
