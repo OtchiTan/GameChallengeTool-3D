@@ -23,17 +23,27 @@ public partial class LevelParser : Resource
 
         foreach (var square in _description.Static.PositionCollisions)
         {
-            for (var inX = 0; inX < square.Width / 16; inX++)
-            {
-                for (var inY = 0; inY < square.Height / 16; inY++)
-                {
-                    var position = new Vector3I(square.X / 16 + inX, levelHeight - square.Y / 16 + inY, 0);
-                    voxels[position] = 1;
-                }
-            }
+            ParseSquare(square, voxels, levelHeight);
+        }
+
+        foreach (var square in _description.Static.Pipes)
+        {
+            ParseSquare(square, voxels, levelHeight);
         }
 
         return _description;
+    }
+
+    private void ParseSquare(Square square, VoxelDatabase voxels, int levelHeight)
+    {
+        for (var inX = 0; inX < square.Width / 16; inX++)
+        {
+            for (var inY = 0; inY < square.Height / 16; inY++)
+            {
+                var position = new Vector3I(square.X / 16 + inX, levelHeight - square.Y / 16 - inY, 0);
+                voxels[position] = 1;
+            }
+        }
     }
 
 

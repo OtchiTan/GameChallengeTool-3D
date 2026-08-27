@@ -46,7 +46,7 @@ ReachRenderer = NodePath("../PheromoneRenderer")
 LevelPathfinder = NodePath("LevelPathfinder")
 ReachPheromoneGenerator = SubResource("Resource_6ksr0")
 VoxelDatabase = SubResource("Resource_jl41k")
-LevelWidth = 4
+LevelWidth = 6
 Noise = SubResource("FastNoiseLite_msi8u")
 metadata/_custom_type_script = "uid://dwex06qxe1psd"
 
@@ -75,6 +75,7 @@ multimesh = SubResource("MultiMesh_k6aki")
 
 [node name="Camera" parent="Lights" unique_id=236896310 instance=ExtResource("5_tbgi4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.00013, 20.566917, 45.95625)
+sprint_multiplier = 3.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lights" unique_id=955697983]
 transform = Transform3D(0.9555655, -0.22484411, 0.19063061, -0.29247856, -0.64253074, 0.70824486, -0.03675865, -0.7325295, -0.67974204, 193.8512, 101.56299, 0)

@@ -28,54 +28,26 @@ public partial class ReachPheromoneGenerator : Resource
 
                     var value = 6;
 
-                    for (var oy = y + 1; oy < levelSize.Y; oy++)
+                    // Extend vertical
+                    for (var oy = y; oy < levelSize.Y; oy++)
                     {
                         if (levelVoxels[x, oy, z] > 0)
                             break;
 
                         pheromoneVoxels[x, oy, z] += value;
 
-                        var valueX = value;
 
-                        for (var ox = x; ox > x - value; ox--)
+                        foreach (var direction in (Vector3I[])
+                                 [Vector3I.Right, Vector3I.Left, Vector3I.Forward, Vector3I.Back])
                         {
-                            if (ox < 0 || levelVoxels[ox, oy, z] > 0)
-                                break;
-
-                            pheromoneVoxels[ox, oy, z] += valueX;
-
-                            /*for (var ooy = oy + 1; ooy > levelSize.Y - 1; ooy++)
-                            {
-                                if (levelVoxels[ox, ooy, z] > 0)
-                                    break;
-
-                                pheromoneVoxels[ooy, ox, z] += valueX;
-                            }*/
-
-                            valueX--;
+                            ExtendPheromoneHorizontal(
+                                new Vector3I(x, oy, z),
+                                direction,
+                                value,
+                                levelVoxels,
+                                pheromoneVoxels
+                            );
                         }
-
-                        valueX = value;
-
-                        /*for (var ox = x; ox < x + value; ox++)
-                        {
-                            if (ox >= levelSize.X || levelVoxels[ox, oy, z] > 0)
-                                break;
-
-                            pheromoneVoxels[ox, oy, z] += valueX;
-
-                            /*
-                            for (var ooy = oy - 1; ooy > 0; ooy--)
-                            {
-                                if (levelVoxels[ox, ooy, z] > 0)
-                                    break;
-
-                                pheromoneVoxels[ooy, ox, z] += valueX;
-                            }
-                            *
-
-                            valueX--;
-                        }*/
 
                         value--;
 
@@ -89,5 +61,40 @@ public partial class ReachPheromoneGenerator : Resource
         pheromoneVoxels.Normalize(100);
 
         return pheromoneVoxels;
+    }
+
+    private static void ExtendPheromoneHorizontal(
+        Vector3I index,
+        Vector3I direction,
+        int value,
+        VoxelDatabase levelVoxels,
+        VoxelDatabase pheromoneVoxels)
+    {
+        var axis = direction.X != 0 ? 0 : 2;
+
+        for (var offset = 0; offset < value; offset++)
+        {
+            var nextIndex = index;
+            nextIndex[axis] += offset * direction[axis];
+
+            if (levelVoxels[nextIndex] > 0)
+                break;
+
+            pheromoneVoxels[nextIndex] += value;
+
+            // Extend Down
+            for (var offsetY = nextIndex.Y - 1; offsetY > 0; offsetY--)
+            {
+                var nextIndexY = nextIndex;
+                nextIndexY.Y = offsetY;
+
+                if (levelVoxels[nextIndexY] > 0)
+                    break;
+
+                pheromoneVoxels[nextIndexY] += value;
+            }
+
+            value--;
+        }
     }
 }
