@@ -14,33 +14,36 @@ public partial class LevelParser : Resource
         _description = new LevelDescription();
     }
 
-    public LevelDescription ParseLevelDescription(VoxelDatabase voxels)
+    public LevelDescription ParseLevelDescription(VoxelDatabase voxels, int voxelSize)
     {
         const string path = "res://data/level.json";
         _description = LoadJson<LevelDescription>(path);
 
-        var levelHeight = _description.LevelRows / 16;
+        var levelHeight = _description.LevelRows / voxelSize;
 
         foreach (var square in _description.Static.PositionCollisions)
         {
-            ParseSquare(square, voxels, levelHeight);
+            ParseSquare(square, voxels, levelHeight, voxelSize);
         }
 
         foreach (var square in _description.Static.Pipes)
         {
-            ParseSquare(square, voxels, levelHeight);
+            ParseSquare(square, voxels, levelHeight, voxelSize);
         }
+
+        _description.Static.Spawn.Y = _description.LevelRows - _description.Static.Spawn.Y;
+        _description.Static.End.Y = _description.LevelRows - _description.Static.End.Y;
 
         return _description;
     }
 
-    private void ParseSquare(Square square, VoxelDatabase voxels, int levelHeight)
+    private static void ParseSquare(Square square, VoxelDatabase voxels, int levelHeight, int voxelSize)
     {
-        for (var inX = 0; inX < square.Width / 16; inX++)
+        for (var inX = 0; inX < square.Width / voxelSize; inX++)
         {
-            for (var inY = 0; inY < square.Height / 16; inY++)
+            for (var inY = 0; inY < square.Height / voxelSize; inY++)
             {
-                var position = new Vector3I(square.X / 16 + inX, levelHeight - square.Y / 16 - inY, 0);
+                var position = new Vector3I(square.X / voxelSize + inX, levelHeight - square.Y / voxelSize - inY, 0);
                 voxels[position] = 1;
             }
         }

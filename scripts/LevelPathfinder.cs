@@ -12,6 +12,7 @@ public partial class LevelPathfinder : Node
 
     private List<Vector3I> _path = [];
 
+    // Direction des 6 voisins adjacents (haut, bas, gauche, droite, avant, arrière)
     private static readonly Vector3I[] Directions =
     [
         new(1, 0, 0), new(-1, 0, 0),
@@ -25,7 +26,7 @@ public partial class LevelPathfinder : Node
 
     public override void _Process(double delta)
     {
-        for (var i = 0; i < _path.Count; i++)
+        for (int i = 0; i < _path.Count; i++)
         {
             if (i == 0) continue;
 
@@ -40,15 +41,13 @@ public partial class LevelPathfinder : Node
     {
         _path.Clear();
 
-
-        if (voxels[start] == 0 || voxels[end] == 0)
-            return _path;
-
         var openSet = new PriorityQueue<Vector3I, float>();
         var cameFrom = new Dictionary<Vector3I, Vector3I>();
-        var gScore = new Dictionary<Vector3I, float>();
+        var gScore = new Dictionary<Vector3I, float>
+        {
+            [start] = 0
+        };
 
-        gScore[start] = 0;
         openSet.Enqueue(start, Heuristic(start, end));
 
         while (openSet.Count > 0)
@@ -65,11 +64,12 @@ public partial class LevelPathfinder : Node
             {
                 var neighbor = current + dir;
 
+                var voxel = voxels[current];
 
-                if (voxels[neighbor] == 0)
+                if (voxel == 0)
                     continue;
 
-                var tentativeGScore = gScore[current] + 1;
+                var tentativeGScore = gScore[current] + 1 + (100 - voxel);
 
                 if (tentativeGScore < gScore.GetValueOrDefault(neighbor, float.MaxValue))
                 {

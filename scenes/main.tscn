@@ -38,11 +38,10 @@ mesh = SubResource("BoxMesh_k6aki")
 
 [node name="Main" type="Node3D" unique_id=1665535212]
 
-[node name="LevelGenerator" type="Node3D" parent="." unique_id=748302552 node_paths=PackedStringArray("LevelRenderer", "ReachRenderer", "LevelPathfinder")]
+[node name="LevelGenerator" type="Node3D" parent="." unique_id=748302552 node_paths=PackedStringArray("LevelRenderer", "LevelPathfinder")]
 script = ExtResource("2_0wfyh")
 LevelParser = SubResource("Resource_t2vqn")
 LevelRenderer = NodePath("../MeshRenderer")
-ReachRenderer = NodePath("../PheromoneRenderer")
 LevelPathfinder = NodePath("LevelPathfinder")
 ReachPheromoneGenerator = SubResource("Resource_6ksr0")
 VoxelDatabase = SubResource("Resource_jl41k")

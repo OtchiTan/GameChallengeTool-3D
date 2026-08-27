@@ -10,9 +10,9 @@ public class Square
     [JsonPropertyName("x")] public int Y { get; set; }
     [JsonPropertyName("y")] public int X { get; set; }
 
-    public Vector3I GetOrigin()
+    public Vector3I GetOrigin(int voxelSize)
     {
-        return new Vector3I(X / 16, Y / 16, 0);
+        return new Vector3I(X / voxelSize, Y / voxelSize, 0);
     }
 }
 

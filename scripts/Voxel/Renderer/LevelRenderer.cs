@@ -36,7 +36,7 @@ public partial class LevelRenderer : Node3D
         }
     }
 
-    public virtual void DrawVoxel(int instance, Vector3I index, int voxel)
+    protected virtual void DrawVoxel(int instance, Vector3I index, int voxel)
     {
         if (voxel == 0) return;
 

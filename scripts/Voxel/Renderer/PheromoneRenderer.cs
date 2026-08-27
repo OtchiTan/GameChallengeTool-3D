@@ -5,7 +5,7 @@ namespace Mario3D.scripts.Voxel.Renderer;
 [GlobalClass]
 public partial class PheromoneRenderer : LevelRenderer
 {
-    public override void DrawVoxel(int instance, Vector3I index, int voxel)
+    protected override void DrawVoxel(int instance, Vector3I index, int voxel)
     {
         if (voxel == 0) return;
 
