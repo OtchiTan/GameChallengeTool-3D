@@ -4,15 +4,17 @@
 [ext_resource type="Script" uid="uid://b7wsoqn7xfgal" path="res://scripts/LevelInput/LevelParser.cs" id="2_jyhfs"]
 [ext_resource type="Script" uid="uid://ctrok4a3byfv0" path="res://scripts/Processing/ReachPheromoneGenerator.cs" id="3_85g3d"]
 [ext_resource type="Script" uid="uid://bba8vjfyh6eow" path="res://scripts/LevelPathfinder.cs" id="3_o6xl0"]
-[ext_resource type="Script" uid="uid://x4v8sbwmngyv" path="res://scripts/Voxel/Renderer/LevelRenderer.cs" id="3_tbgi4"]
 [ext_resource type="Script" uid="uid://c8xpqsbuv8f8c" path="res://scripts/Voxel/VoxelDatabase.cs" id="4_85g3d"]
 [ext_resource type="PackedScene" uid="uid://dmqnt6n4qf46b" path="res://scenes/camera.tscn" id="5_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://cqdxip34ig1fa" path="res://addons/debug_draw/debug_draw_3d.tscn" id="6_tefeu"]
-[ext_resource type="Script" uid="uid://c34wkukorl84t" path="res://scripts/Voxel/Renderer/PheromoneRenderer.cs" id="7_85g3d"]
 
 [sub_resource type="Resource" id="Resource_t2vqn"]
 script = ExtResource("2_jyhfs")
 metadata/_custom_type_script = "uid://b7wsoqn7xfgal"
+
+[sub_resource type="Resource" id="Resource_o8k11"]
+script = ExtResource("3_o6xl0")
+metadata/_custom_type_script = "uid://bba8vjfyh6eow"
 
 [sub_resource type="Resource" id="Resource_6ksr0"]
 script = ExtResource("3_85g3d")
@@ -25,58 +27,21 @@ metadata/_custom_type_script = "uid://c8xpqsbuv8f8c"
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_msi8u"]
 frequency = 0.2
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_85g3d"]
-vertex_color_use_as_albedo = true
-
-[sub_resource type="BoxMesh" id="BoxMesh_k6aki"]
-material = SubResource("StandardMaterial3D_85g3d")
-
-[sub_resource type="MultiMesh" id="MultiMesh_k6aki"]
-transform_format = 1
-use_colors = true
-mesh = SubResource("BoxMesh_k6aki")
-
-[node name="Main" type="Node3D" unique_id=1665535212]
-
-[node name="LevelGenerator" type="Node3D" parent="." unique_id=748302552 node_paths=PackedStringArray("LevelRenderer", "LevelPathfinder")]
+[node name="LevelGenerator" type="Node3D" unique_id=748302552]
 script = ExtResource("2_0wfyh")
 LevelParser = SubResource("Resource_t2vqn")
-LevelRenderer = NodePath("../MeshRenderer")
-LevelPathfinder = NodePath("LevelPathfinder")
+LevelPathfinder = SubResource("Resource_o8k11")
 ReachPheromoneGenerator = SubResource("Resource_6ksr0")
 VoxelDatabase = SubResource("Resource_jl41k")
 LevelWidth = 6
 Noise = SubResource("FastNoiseLite_msi8u")
 metadata/_custom_type_script = "uid://dwex06qxe1psd"
 
-[node name="LevelPathfinder" type="Node" parent="LevelGenerator" unique_id=1444487313 node_paths=PackedStringArray("DebugDraw")]
-script = ExtResource("3_o6xl0")
-DebugDraw = NodePath("../../Lights/DebugDraw3D")
-metadata/_custom_type_script = "uid://bba8vjfyh6eow"
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=955697983]
+transform = Transform3D(0.9555654, -0.2248441, 0.19063058, -0.29247853, -0.64253074, 0.70824474, -0.036758646, -0.7325295, -0.67974216, 193.8512, 101.56299, 0)
 
-[node name="MeshRenderer" type="Node3D" parent="." unique_id=403807449 node_paths=PackedStringArray("MeshInstance")]
-script = ExtResource("3_tbgi4")
-MeshInstance = NodePath("MultiMeshInstance3D")
-metadata/_custom_type_script = "uid://x4v8sbwmngyv"
+[node name="DebugDraw" parent="." unique_id=1516371635 instance=ExtResource("6_tefeu")]
 
-[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="MeshRenderer" unique_id=1978406769]
-multimesh = SubResource("MultiMesh_k6aki")
-
-[node name="PheromoneRenderer" type="Node3D" parent="." unique_id=369338789 node_paths=PackedStringArray("MeshInstance")]
-script = ExtResource("7_85g3d")
-MeshInstance = NodePath("MultiMeshInstance3D")
-metadata/_custom_type_script = "uid://c34wkukorl84t"
-
-[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="PheromoneRenderer" unique_id=1928611541]
-multimesh = SubResource("MultiMesh_k6aki")
-
-[node name="Lights" type="Node" parent="." unique_id=1099950368]
-
-[node name="Camera" parent="Lights" unique_id=236896310 instance=ExtResource("5_tbgi4")]
+[node name="Camera" parent="." unique_id=236896310 instance=ExtResource("5_tbgi4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.00013, 20.566917, 45.95625)
 sprint_multiplier = 3.0
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lights" unique_id=955697983]
-transform = Transform3D(0.9555655, -0.22484411, 0.19063061, -0.29247856, -0.64253074, 0.70824486, -0.03675865, -0.7325295, -0.67974204, 193.8512, 101.56299, 0)
-
-[node name="DebugDraw3D" parent="Lights" unique_id=1516371635 instance=ExtResource("6_tefeu")]

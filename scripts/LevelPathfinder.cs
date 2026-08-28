@@ -6,13 +6,12 @@ using Mario3D.scripts.Voxel;
 namespace Mario3D.scripts;
 
 [GlobalClass]
-public partial class LevelPathfinder : Node
+public partial class LevelPathfinder : Resource
 {
-    [Export] public Node3D DebugDraw { get; set; }
+    public LevelPathfinder()
+    {
+    }
 
-    private List<Vector3I> _path = [];
-
-    // Direction des 6 voisins adjacents (haut, bas, gauche, droite, avant, arrière)
     private static readonly Vector3I[] Directions =
     [
         new(1, 0, 0), new(-1, 0, 0),
@@ -20,27 +19,8 @@ public partial class LevelPathfinder : Node
         new(0, 0, 1), new(0, 0, -1)
     ];
 
-    public override void _Ready()
+    public static List<Vector3I> FindPath(Vector3I start, Vector3I end, VoxelDatabase voxels)
     {
-    }
-
-    public override void _Process(double delta)
-    {
-        for (int i = 0; i < _path.Count; i++)
-        {
-            if (i == 0) continue;
-
-            DebugDraw.CallDeferred("draw_line",
-                _path[i - 1] + new Vector3(0.5F, 0.5F, -0.5F),
-                _path[i] + new Vector3(0.5F, 0.5F, -0.5F)
-            );
-        }
-    }
-
-    public List<Vector3I> FindPath(Vector3I start, Vector3I end, VoxelDatabase voxels)
-    {
-        _path.Clear();
-
         var openSet = new PriorityQueue<Vector3I, float>();
         var cameFrom = new Dictionary<Vector3I, Vector3I>();
         var gScore = new Dictionary<Vector3I, float>
@@ -56,8 +36,7 @@ public partial class LevelPathfinder : Node
 
             if (current == end)
             {
-                _path = ReconstructPath(cameFrom, current);
-                return _path;
+                return ReconstructPath(cameFrom, current);
             }
 
             foreach (var dir in Directions)
@@ -82,7 +61,7 @@ public partial class LevelPathfinder : Node
             }
         }
 
-        return _path;
+        return [];
     }
 
     private static float Heuristic(Vector3I a, Vector3I b)
