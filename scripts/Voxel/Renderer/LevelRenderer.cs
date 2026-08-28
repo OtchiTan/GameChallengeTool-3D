@@ -18,15 +18,17 @@ public partial class LevelRenderer : Node3D
     {
     }
 
-    public void DrawVoxels(Vector3I levelSize, VoxelDatabase voxels)
+    public void DrawVoxels(Vector3I chunkIndex, VoxelDatabase voxels)
     {
-        MeshInstance.Multimesh.SetInstanceCount(levelSize.X * levelSize.Y * levelSize.Z);
+        MeshInstance.Multimesh.SetInstanceCount(voxels.ChunkSize.X * voxels.ChunkSize.Y * voxels.ChunkSize.Z);
         var i = 0;
-        for (var x = 0; x < levelSize.X; x++)
+
+        var origin = chunkIndex * voxels.ChunkSize;
+        for (var x = origin.X; x < origin.X + voxels.ChunkSize.X; x++)
         {
-            for (var y = 0; y < levelSize.Y; y++)
+            for (var y = origin.Y; y < origin.Y + voxels.ChunkSize.Y; y++)
             {
-                for (var z = 0; z < levelSize.Z; z++)
+                for (var z = origin.Z; z < origin.Z + voxels.ChunkSize.Z; z++)
                 {
                     var index = new Vector3I(x, y, z);
                     var voxel = voxels[index];

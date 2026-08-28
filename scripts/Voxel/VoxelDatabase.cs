@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace Mario3D.scripts.Voxel;
@@ -18,59 +20,70 @@ public enum VoxelDatabaseType
 [GlobalClass]
 public partial class VoxelDatabase : Resource
 {
-    private IVoxelDatabase _voxelDatabase;
+    private readonly Dictionary<Vector3I, IVoxelDatabase> _voxelDatabases = new();
 
     [Export] public VoxelDatabaseType VoxelDatabaseType = VoxelDatabaseType.VoxelDictionary;
+    public Vector3I ChunkSize;
 
     public VoxelDatabase()
     {
-        InitDatabase(VoxelDatabaseType);
     }
 
-    public VoxelDatabase(VoxelDatabaseType voxelDatabaseType)
+    /**
+     * Create empty database with same parameters
+     * Don't duplicate voxels
+     */
+    public VoxelDatabase DuplicateEmpty()
     {
-        InitDatabase(voxelDatabaseType);
+        var newDatabase = new VoxelDatabase();
+        newDatabase.VoxelDatabaseType = VoxelDatabaseType;
+        newDatabase.ChunkSize = ChunkSize;
+        return newDatabase;
     }
 
     public void Normalize(int max)
     {
-        _voxelDatabase.Normalize(max);
+        foreach (var voxelDatabase in _voxelDatabases)
+        {
+            voxelDatabase.Value.Normalize(max);
+        }
     }
 
     public int CountVoxels()
     {
-        return _voxelDatabase.CountVoxels();
+        return _voxelDatabases.Sum(voxelDatabase => voxelDatabase.Value.CountVoxels());
     }
 
-    private void InitDatabase(VoxelDatabaseType voxelDatabaseType)
+    private IVoxelDatabase InitDatabase()
     {
-        VoxelDatabaseType = voxelDatabaseType;
-
-        _voxelDatabase = VoxelDatabaseType switch
+        return VoxelDatabaseType switch
         {
             VoxelDatabaseType.VoxelDictionary => new VoxelDictionary(),
-            _ => _voxelDatabase
+            _ => new VoxelDictionary()
         };
     }
 
     private bool SetVoxel(Vector3I index, int voxel)
     {
-        return _voxelDatabase.SetVoxel(index.X, index.Y, index.Z, voxel);
-    }
+        var chunkIndex = index / ChunkSize;
 
-    private bool SetVoxel(int x, int y, int z, int voxel)
-    {
-        return _voxelDatabase.SetVoxel(x, y, z, voxel);
+        if (_voxelDatabases.TryGetValue(chunkIndex, out var voxelDatabase))
+        {
+            index -= ChunkSize * chunkIndex;
+            return voxelDatabase.SetVoxel(index.X, index.Y, index.Z, voxel);
+        }
+
+        _voxelDatabases[chunkIndex] = InitDatabase();
+        return _voxelDatabases[chunkIndex].SetVoxel(index.X, index.Y, index.Z, voxel);
     }
 
     private int GetVoxel(Vector3I index)
     {
-        return _voxelDatabase.GetVoxel(index.X, index.Y, index.Z);
-    }
-
-    private int GetVoxel(int x, int y, int z)
-    {
-        return _voxelDatabase.GetVoxel(x, y, z);
+        var chunkIndex = index / ChunkSize;
+        index -= ChunkSize * chunkIndex;
+        return _voxelDatabases.TryGetValue(chunkIndex, out var voxelDatabase)
+            ? voxelDatabase.GetVoxel(index.X, index.Y, index.Z)
+            : 0;
     }
 
     public int this[Vector3I index]

@@ -10,15 +10,16 @@ public partial class ReachPheromoneGenerator : Resource
     {
     }
 
-    public VoxelDatabase GenerateReachPheromoneMap(Vector3I levelSize, VoxelDatabase levelVoxels)
+    public VoxelDatabase GenerateReachPheromoneMap(Vector3I chunkIndex, VoxelDatabase levelVoxels)
     {
-        var pheromoneVoxels = new VoxelDatabase(levelVoxels.VoxelDatabaseType);
+        var pheromoneVoxels = levelVoxels.DuplicateEmpty();
 
-        for (var x = 0; x < levelSize.X; x++)
+        var origin = chunkIndex * levelVoxels.ChunkSize;
+        for (var x = origin.X; x < origin.X + levelVoxels.ChunkSize.X; x++)
         {
-            for (var y = 0; y < levelSize.Y; y++)
+            for (var y = origin.Y; y < origin.Y + levelVoxels.ChunkSize.Y; y++)
             {
-                for (var z = 0; z < levelSize.Z; z++)
+                for (var z = origin.Z; z < origin.Z + levelVoxels.ChunkSize.Z; z++)
                 {
                     var index = new Vector3I(x, y, z);
                     var voxel = levelVoxels[index];
@@ -29,7 +30,7 @@ public partial class ReachPheromoneGenerator : Resource
                     var value = 6;
 
                     // Extend vertical
-                    for (var oy = y; oy < levelSize.Y; oy++)
+                    for (var oy = y; oy < levelVoxels.ChunkSize.Y; oy++)
                     {
                         if (levelVoxels[x, oy, z] > 0)
                             break;
