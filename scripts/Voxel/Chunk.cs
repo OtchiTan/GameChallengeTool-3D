@@ -1,4 +1,5 @@
 using Godot;
+using Mario3D.scripts.Voxel.Database;
 using Mario3D.scripts.Voxel.Renderer;
 
 namespace Mario3D.scripts.Voxel;
@@ -8,7 +9,6 @@ public partial class Chunk : Node
     private LevelRenderer _levelRenderer = new();
     private PheromoneRenderer _pheromoneRenderer;
     public Vector3I ChunkIndex;
-    public VoxelDatabase ReachPheromoneMap = new();
 
     public override void _Ready()
     {
@@ -19,7 +19,8 @@ public partial class Chunk : Node
     {
     }
 
-    public void RenderChunk(VoxelDatabase voxelDatabase, bool renderReachPheromoneMap)
+    public void RenderChunk(VoxelDatabase voxelDatabase, VoxelDatabase reachPheromoneMap,
+        bool renderReachPheromoneMap)
     {
         _levelRenderer.DrawVoxels(ChunkIndex, voxelDatabase);
 
@@ -28,6 +29,6 @@ public partial class Chunk : Node
 
         _pheromoneRenderer = new PheromoneRenderer();
         AddChild(_pheromoneRenderer);
-        _pheromoneRenderer.DrawVoxels(ChunkIndex, ReachPheromoneMap);
+        _pheromoneRenderer.DrawVoxels(ChunkIndex, reachPheromoneMap);
     }
 }

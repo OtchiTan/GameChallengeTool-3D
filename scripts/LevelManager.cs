@@ -4,6 +4,7 @@ using Mario3D.scripts.Generation;
 using Mario3D.scripts.LevelInput;
 using Mario3D.scripts.Processing;
 using Mario3D.scripts.Voxel;
+using Mario3D.scripts.Voxel.Database;
 using Mario3D.scripts.Voxel.Renderer;
 
 namespace Mario3D.scripts;
@@ -26,10 +27,10 @@ public partial class LevelManager : Node3D
     public int LevelWidth { get; set; } = 2;
 
     private readonly Dictionary<Vector3I, Chunk> _chunks = new();
-    private Vector3I _levelSize;
     private PheromoneRenderer _reachRenderer = new();
     private List<Vector3I> _path = [];
     private Node3D _debugDraw;
+    private VoxelDatabase _reachPheromoneDatabase;
 
     public override void _Ready()
     {
@@ -74,7 +75,7 @@ public partial class LevelManager : Node3D
 
         var levelDescription = LevelParser.ParseLevelDescription(VoxelDatabase, VoxelSize);
 
-        _levelSize = new Vector3I(
+        var levelSize = new Vector3I(
             levelDescription.LevelCols / VoxelSize,
             levelDescription.LevelRows / VoxelSize,
             LevelWidth
@@ -82,13 +83,20 @@ public partial class LevelManager : Node3D
 
         GD.Print("Generate level");
 
-        VoxelDatabase = LevelGenerator.GenerateLevel(VoxelDatabase, _levelSize);
+        VoxelDatabase = LevelGenerator.GenerateLevel(VoxelDatabase, levelSize);
+        _reachPheromoneDatabase = VoxelDatabase.DuplicateEmpty();
 
-        for (var x = 0; x < Mathf.CeilToInt(_levelSize.X / (float)ChunkSize); x++)
+        var chunkIndices = new Vector3I(
+            Mathf.CeilToInt(levelSize.X / (float)ChunkSize),
+            Mathf.CeilToInt(levelSize.Y / (float)ChunkSize),
+            Mathf.CeilToInt(levelSize.Z / (float)ChunkSize)
+        );
+
+        for (var x = 0; x < chunkIndices.X; x++)
         {
-            for (var y = 0; y < Mathf.CeilToInt(_levelSize.Y / (float)ChunkSize); y++)
+            for (var y = 0; y < chunkIndices.Y; y++)
             {
-                for (var z = 0; z < Mathf.CeilToInt(_levelSize.Z / (float)ChunkSize); z++)
+                for (var z = -chunkIndices.Z; z <= chunkIndices.Z; z++)
                 {
                     var chunkIndex = new Vector3I(x, y, z);
                     SpawnChunk(chunkIndex);
@@ -99,9 +107,12 @@ public partial class LevelManager : Node3D
         GD.Print("Render chunks");
         foreach (var chunk in _chunks)
         {
-            chunk.Value.ReachPheromoneMap =
-                ReachPheromoneGenerator.GenerateReachPheromoneMap(chunk.Key, VoxelDatabase);
-            chunk.Value.RenderChunk(VoxelDatabase, DrawReachPheromone);
+            ReachPheromoneGenerator.GenerateReachPheromoneMap(
+                chunk.Key,
+                VoxelDatabase,
+                _reachPheromoneDatabase
+            );
+            chunk.Value.RenderChunk(VoxelDatabase, _reachPheromoneDatabase, DrawReachPheromone);
         }
 
         GD.Print("Find Path");
@@ -109,6 +120,6 @@ public partial class LevelManager : Node3D
         _path = LevelPathfinder.FindPath(
             levelDescription.Static.Spawn.GetOrigin(VoxelSize) + Vector3I.Up,
             levelDescription.Static.End.GetOrigin(VoxelSize) - new Vector3I(0, 8, 0),
-            _chunks[Vector3I.Zero].ReachPheromoneMap);
+            _reachPheromoneDatabase);
     }
 }

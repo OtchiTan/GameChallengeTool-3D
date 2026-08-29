@@ -1,19 +1,16 @@
 using Godot;
-using Mario3D.scripts.Voxel;
+using Mario3D.scripts.Voxel.Database;
 
 namespace Mario3D.scripts.Processing;
 
 [GlobalClass]
 public partial class ReachPheromoneGenerator : Resource
 {
-    public ReachPheromoneGenerator()
+    public void GenerateReachPheromoneMap(
+        Vector3I chunkIndex,
+        VoxelDatabase levelVoxels,
+        VoxelDatabase pheromoneVoxels)
     {
-    }
-
-    public VoxelDatabase GenerateReachPheromoneMap(Vector3I chunkIndex, VoxelDatabase levelVoxels)
-    {
-        var pheromoneVoxels = levelVoxels.DuplicateEmpty();
-
         var origin = chunkIndex * levelVoxels.ChunkSize;
         for (var x = origin.X; x < origin.X + levelVoxels.ChunkSize.X; x++)
         {
@@ -60,8 +57,6 @@ public partial class ReachPheromoneGenerator : Resource
         }
 
         pheromoneVoxels.Normalize(100);
-
-        return pheromoneVoxels;
     }
 
     private static void ExtendPheromoneHorizontal(

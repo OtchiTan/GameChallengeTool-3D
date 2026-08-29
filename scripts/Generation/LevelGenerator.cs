@@ -1,6 +1,5 @@
 using Godot;
-using Mario3D.scripts.LevelInput;
-using Mario3D.scripts.Voxel;
+using Mario3D.scripts.Voxel.Database;
 
 namespace Mario3D.scripts.Generation;
 
@@ -29,9 +28,9 @@ public partial class LevelGenerator : Resource
 
                 if (voxel == 0) continue;
 
-                for (var z = 0; z < levelSize.Z; z++)
+                for (var z = -levelSize.Z; z <= levelSize.Z; z++)
                 {
-                    if (Noise.GetNoise3D(x, y, z) > 0.0F) continue;
+                    if (z != 0 && Noise.GetNoise3D(x, y, z) > 0f) continue;
 
                     newDatabase[x, y, z] = voxel;
                 }

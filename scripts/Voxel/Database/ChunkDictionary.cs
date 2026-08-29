@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using Godot;
 
-namespace Mario3D.scripts.Voxel;
+namespace Mario3D.scripts.Voxel.Database;
 
-public class VoxelDictionary : IVoxelDatabase
+public class ChunkDictionary : IChunkDatabase
 {
-    private readonly Dictionary<Vector3I, int> _voxels = new();
+    private Dictionary<Vector3I, int> _voxels = new();
 
     private int _maxValue;
 
@@ -37,5 +37,14 @@ public class VoxelDictionary : IVoxelDatabase
     public int CountVoxels()
     {
         return _voxels.Count;
+    }
+
+    public IChunkDatabase Clone()
+    {
+        return new ChunkDictionary
+        {
+            _maxValue = _maxValue,
+            _voxels = new Dictionary<Vector3I, int>(_voxels)
+        };
     }
 }

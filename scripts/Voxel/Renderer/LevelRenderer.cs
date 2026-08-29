@@ -1,4 +1,5 @@
 using Godot;
+using Mario3D.scripts.Voxel.Database;
 
 namespace Mario3D.scripts.Voxel.Renderer;
 
@@ -45,7 +46,11 @@ public partial class LevelRenderer : Node3D
     {
         if (voxel == 0) return;
 
-        var transform = new Transform3D(Basis.Identity, new Vector3(index.X, index.Y, index.Z));
+        var transform = new Transform3D(
+            Basis.FromScale(Vector3.One),
+            new Vector3(index.X, index.Y, index.Z)
+        );
+
         MeshInstance.Multimesh.SetInstanceTransform(instance, transform);
     }
 

@@ -1,17 +1,13 @@
-using Godot;
 using System;
 using System.Collections.Generic;
-using Mario3D.scripts.Voxel;
+using Godot;
+using Mario3D.scripts.Voxel.Database;
 
-namespace Mario3D.scripts;
+namespace Mario3D.scripts.Processing;
 
 [GlobalClass]
 public partial class LevelPathfinder : Resource
 {
-    public LevelPathfinder()
-    {
-    }
-
     private static readonly Vector3I[] Directions =
     [
         new(1, 0, 0), new(-1, 0, 0),
@@ -50,14 +46,14 @@ public partial class LevelPathfinder : Resource
 
                 var tentativeGScore = gScore[current] + 1 + (100 - voxel);
 
-                if (tentativeGScore < gScore.GetValueOrDefault(neighbor, float.MaxValue))
-                {
-                    cameFrom[neighbor] = current;
-                    gScore[neighbor] = tentativeGScore;
-                    var fScore = tentativeGScore + Heuristic(neighbor, end);
+                if (!(tentativeGScore < gScore.GetValueOrDefault(neighbor, float.MaxValue)))
+                    continue;
 
-                    openSet.Enqueue(neighbor, fScore);
-                }
+                cameFrom[neighbor] = current;
+                gScore[neighbor] = tentativeGScore;
+                var fScore = tentativeGScore + Heuristic(neighbor, end);
+
+                openSet.Enqueue(neighbor, fScore);
             }
         }
 
