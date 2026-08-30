@@ -20,15 +20,15 @@ public partial class Chunk : Node
     }
 
     public void RenderChunk(VoxelDatabase voxelDatabase, VoxelDatabase reachPheromoneMap,
-        bool renderReachPheromoneMap)
+        bool renderReachPheromoneMap, float voxelSize)
     {
-        _levelRenderer.DrawVoxels(ChunkIndex, voxelDatabase);
+        _levelRenderer.DrawVoxels(ChunkIndex, voxelDatabase, voxelSize);
 
         if (!renderReachPheromoneMap)
             return;
 
         _pheromoneRenderer = new PheromoneRenderer();
         AddChild(_pheromoneRenderer);
-        _pheromoneRenderer.DrawVoxels(ChunkIndex, reachPheromoneMap);
+        _pheromoneRenderer.DrawVoxels(ChunkIndex, reachPheromoneMap, voxelSize);
     }
 }

@@ -21,9 +21,4 @@ public class ChunkOctree : IChunkDatabase
     {
         throw new System.NotImplementedException();
     }
-
-    public IChunkDatabase Clone()
-    {
-        throw new System.NotImplementedException();
-    }
 }

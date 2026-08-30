@@ -9,6 +9,8 @@ public partial class LevelGenerator : Resource
     [Export, ExportGroup("Generation Parameter")]
     public FastNoiseLite Noise;
 
+    [Export] public bool EnableNoise = true;
+
     public LevelGenerator()
     {
         Noise ??= new FastNoiseLite();
@@ -30,7 +32,7 @@ public partial class LevelGenerator : Resource
 
                 for (var z = -levelSize.Z; z <= levelSize.Z; z++)
                 {
-                    if (z != 0 && Noise.GetNoise3D(x, y, z) > 0f) continue;
+                    if (EnableNoise && z != 0 && Noise.GetNoise3D(x, y, z) > 0f) continue;
 
                     newDatabase[x, y, z] = voxel;
                 }

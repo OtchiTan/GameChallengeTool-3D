@@ -21,7 +21,7 @@ public partial class LevelManager : Node3D
     [Export] public int ChunkSize = 16;
 
     [Export, ExportGroup("Generation Parameter")]
-    public int VoxelSize = 16;
+    public int PixelPerVoxel = 16;
 
     [Export, ExportGroup("Generation Parameter")]
     public int LevelWidth { get; set; } = 2;
@@ -73,11 +73,11 @@ public partial class LevelManager : Node3D
     {
         GD.Print("Parse Level Description");
 
-        var levelDescription = LevelParser.ParseLevelDescription(VoxelDatabase, VoxelSize);
+        var levelDescription = LevelParser.ParseLevelDescription(VoxelDatabase, PixelPerVoxel);
 
         var levelSize = new Vector3I(
-            levelDescription.LevelCols / VoxelSize,
-            levelDescription.LevelRows / VoxelSize,
+            levelDescription.LevelCols / PixelPerVoxel,
+            levelDescription.LevelRows / PixelPerVoxel,
             LevelWidth
         );
 
@@ -112,14 +112,14 @@ public partial class LevelManager : Node3D
                 VoxelDatabase,
                 _reachPheromoneDatabase
             );
-            chunk.Value.RenderChunk(VoxelDatabase, _reachPheromoneDatabase, DrawReachPheromone);
+            chunk.Value.RenderChunk(VoxelDatabase, _reachPheromoneDatabase, DrawReachPheromone, PixelPerVoxel / 16f);
         }
 
         GD.Print("Find Path");
 
         _path = LevelPathfinder.FindPath(
-            levelDescription.Static.Spawn.GetOrigin(VoxelSize) + Vector3I.Up,
-            levelDescription.Static.End.GetOrigin(VoxelSize) - new Vector3I(0, 8, 0),
+            levelDescription.Static.Spawn.GetOrigin(PixelPerVoxel) + Vector3I.Up,
+            levelDescription.Static.End.GetOrigin(PixelPerVoxel) - new Vector3I(0, 8, 0),
             _reachPheromoneDatabase);
     }
 }

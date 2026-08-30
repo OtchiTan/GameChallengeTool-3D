@@ -12,8 +12,8 @@ public partial class PheromoneRenderer : LevelRenderer
         var intensity = voxel / 100f;
         var scale = Mathf.Lerp(0.1f, 1.0f, intensity);
         var transform = new Transform3D(
-            Basis.FromScale(Vector3.One * scale),
-            new Vector3(index.X, index.Y, index.Z)
+            Basis.FromScale(Vector3.One * scale * VoxelSize),
+            new Vector3(index.X, index.Y, index.Z) * VoxelSize
         );
         MeshInstance.Multimesh.SetInstanceTransform(instance, transform);
 

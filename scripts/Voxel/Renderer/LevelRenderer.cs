@@ -7,6 +7,7 @@ namespace Mario3D.scripts.Voxel.Renderer;
 public partial class LevelRenderer : Node3D
 {
     protected MultiMeshInstance3D MeshInstance;
+    protected float VoxelSize;
 
     public override void _Ready()
     {
@@ -19,8 +20,10 @@ public partial class LevelRenderer : Node3D
     {
     }
 
-    public void DrawVoxels(Vector3I chunkIndex, VoxelDatabase voxels)
+    public void DrawVoxels(Vector3I chunkIndex, VoxelDatabase voxels, float voxelSize)
     {
+        VoxelSize = voxelSize;
+
         MeshInstance.Multimesh.SetInstanceCount(voxels.ChunkSize.X * voxels.ChunkSize.Y * voxels.ChunkSize.Z);
         var i = 0;
 
@@ -47,8 +50,8 @@ public partial class LevelRenderer : Node3D
         if (voxel == 0) return;
 
         var transform = new Transform3D(
-            Basis.FromScale(Vector3.One),
-            new Vector3(index.X, index.Y, index.Z)
+            Basis.FromScale(Vector3.One * VoxelSize),
+            new Vector3(index.X, index.Y, index.Z) * VoxelSize
         );
 
         MeshInstance.Multimesh.SetInstanceTransform(instance, transform);

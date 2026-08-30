@@ -10,7 +10,6 @@ public interface IChunkDatabase
     public int GetVoxel(int x, int y, int z);
     public void Normalize(int max);
     public int CountVoxels();
-    public IChunkDatabase Clone();
 }
 
 public enum ChunkDatabaseType
@@ -27,6 +26,11 @@ public partial class VoxelDatabase : Resource
     [Export] public ChunkDatabaseType ChunkDatabaseType = ChunkDatabaseType.VoxelDictionary;
     public Vector3I ChunkSize;
 
+    public VoxelDatabase()
+    {
+        _chunkDatabases[Vector3I.Zero] = InitDatabase();
+    }
+
     /**
      * Create empty database with same parameters
      * Don't duplicate voxels
@@ -37,16 +41,6 @@ public partial class VoxelDatabase : Resource
         newDatabase.ChunkDatabaseType = ChunkDatabaseType;
         newDatabase.ChunkSize = ChunkSize;
         return newDatabase;
-    }
-
-    public bool CopyChunk(Vector3I index, VoxelDatabase otherDatabase)
-    {
-        if (!_chunkDatabases.TryGetValue(index, out var chunkDatabase))
-            return false;
-
-        otherDatabase._chunkDatabases[index] = chunkDatabase.Clone();
-
-        return true;
     }
 
     public void Normalize(int max)
@@ -74,7 +68,7 @@ public partial class VoxelDatabase : Resource
 
     private bool SetVoxel(Vector3I index, int voxel)
     {
-        var chunkIndex = index / ChunkSize;
+        /*var chunkIndex = index / ChunkSize;
 
         if (_chunkDatabases.TryGetValue(chunkIndex, out var chunkDatabase))
         {
@@ -82,15 +76,15 @@ public partial class VoxelDatabase : Resource
             return chunkDatabase.SetVoxel(index.X, index.Y, index.Z, voxel);
         }
 
-        _chunkDatabases[chunkIndex] = InitDatabase();
-        return _chunkDatabases[chunkIndex].SetVoxel(index.X, index.Y, index.Z, voxel);
+        _chunkDatabases[chunkIndex] = InitDatabase();*/
+        return _chunkDatabases[Vector3I.Zero].SetVoxel(index.X, index.Y, index.Z, voxel);
     }
 
     private int GetVoxel(Vector3I index)
     {
-        var chunkIndex = index / ChunkSize;
-        index -= ChunkSize * chunkIndex;
-        return _chunkDatabases.TryGetValue(chunkIndex, out var chunkDatabase)
+        //var chunkIndex = index / ChunkSize;
+        //index -= ChunkSize * chunkIndex;
+        return _chunkDatabases.TryGetValue(Vector3I.Zero, out var chunkDatabase)
             ? chunkDatabase.GetVoxel(index.X, index.Y, index.Z)
             : 0;
     }

@@ -80,6 +80,8 @@ func handle_input():
 	if Input.is_action_just_pressed(KEY_ESCAPE):
 		mouse_captured = not mouse_captured
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if mouse_captured else Input.MOUSE_MODE_VISIBLE
+		get_viewport().debug_draw = Viewport.DEBUG_DRAW_DISABLED if mouse_captured else Viewport.DEBUG_DRAW_WIREFRAME 
+		
 
 	if mouse_captured:
 		# Movement input for each direction

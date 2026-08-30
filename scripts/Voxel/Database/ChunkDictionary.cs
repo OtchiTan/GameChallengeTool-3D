@@ -38,13 +38,4 @@ public class ChunkDictionary : IChunkDatabase
     {
         return _voxels.Count;
     }
-
-    public IChunkDatabase Clone()
-    {
-        return new ChunkDictionary
-        {
-            _maxValue = _maxValue,
-            _voxels = new Dictionary<Vector3I, int>(_voxels)
-        };
-    }
 }
