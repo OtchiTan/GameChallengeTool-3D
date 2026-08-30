@@ -24,6 +24,9 @@ public partial class LevelPathfinder : Resource
             [start] = 0
         };
 
+        GD.Print(start);
+        GD.Print(end);
+
         openSet.Enqueue(start, Heuristic(start, end));
 
         while (openSet.Count > 0)

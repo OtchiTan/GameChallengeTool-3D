@@ -1,19 +1,27 @@
+using System.Collections.Generic;
 using Godot;
 using Mario3D.scripts.Voxel.Database;
 
 namespace Mario3D.scripts.Voxel.Renderer;
 
+public struct MeshInstanceParameter(Transform3D transform)
+{
+    public Transform3D Transform = transform;
+    public Color Color;
+}
+
 [GlobalClass]
 public partial class LevelRenderer : Node3D
 {
-    protected MultiMeshInstance3D MeshInstance;
+    private MultiMeshInstance3D _meshInstance;
     protected float VoxelSize;
+    protected readonly List<MeshInstanceParameter> MeshParameters = [];
 
     public override void _Ready()
     {
-        MeshInstance = new MultiMeshInstance3D();
-        MeshInstance.Multimesh = CreateMultiMesh();
-        AddChild(MeshInstance);
+        _meshInstance = new MultiMeshInstance3D();
+        _meshInstance.Multimesh = CreateMultiMesh();
+        AddChild(_meshInstance);
     }
 
     public override void _Process(double delta)
@@ -24,8 +32,7 @@ public partial class LevelRenderer : Node3D
     {
         VoxelSize = voxelSize;
 
-        MeshInstance.Multimesh.SetInstanceCount(voxels.ChunkSize.X * voxels.ChunkSize.Y * voxels.ChunkSize.Z);
-        var i = 0;
+        MeshParameters.Clear();
 
         var origin = chunkIndex * voxels.ChunkSize;
         for (var x = origin.X; x < origin.X + voxels.ChunkSize.X; x++)
@@ -35,26 +42,43 @@ public partial class LevelRenderer : Node3D
                 for (var z = origin.Z; z < origin.Z + voxels.ChunkSize.Z; z++)
                 {
                     var index = new Vector3I(x, y, z);
-                    var voxel = voxels[index];
 
-                    DrawVoxel(i, index, voxel);
-
-                    i++;
+                    DrawVoxel(index, voxels);
                 }
             }
         }
+
+        _meshInstance.Multimesh.SetInstanceCount(MeshParameters.Count);
+
+        for (var i = 0; i < MeshParameters.Count; i++)
+        {
+            _meshInstance.Multimesh.SetInstanceTransform(i, MeshParameters[i].Transform);
+            _meshInstance.Multimesh.SetInstanceColor(i, MeshParameters[i].Color);
+        }
     }
 
-    protected virtual void DrawVoxel(int instance, Vector3I index, int voxel)
+    protected virtual void DrawVoxel(Vector3I index, VoxelDatabase voxels)
     {
-        if (voxel == 0) return;
+        var voxel = voxels[index];
 
-        var transform = new Transform3D(
-            Basis.FromScale(Vector3.One * VoxelSize),
-            new Vector3(index.X, index.Y, index.Z) * VoxelSize
-        );
+        if (voxel == 0)
+            return;
 
-        MeshInstance.Multimesh.SetInstanceTransform(instance, transform);
+        foreach (var direction in (Vector3I[])
+                 [Vector3I.Right, Vector3I.Left, Vector3I.Forward, Vector3I.Back, Vector3I.Up, Vector3I.Down])
+        {
+            var nextVoxel = voxels[index + direction];
+            if (nextVoxel == 0)
+            {
+                var transform = new Transform3D(
+                    Basis.FromScale(Vector3.One * VoxelSize),
+                    new Vector3(index.X, index.Y, index.Z) * VoxelSize
+                );
+
+                MeshParameters.Add(new MeshInstanceParameter(transform));
+                return;
+            }
+        }
     }
 
     private static StandardMaterial3D CreateMaterial()

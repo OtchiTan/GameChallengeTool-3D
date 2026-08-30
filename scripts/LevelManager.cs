@@ -45,9 +45,6 @@ public partial class LevelManager : Node3D
         VoxelDatabase.ChunkSize = new Vector3I(ChunkSize, ChunkSize, ChunkSize);
         LevelGenerator ??= new LevelGenerator();
 
-        VoxelDatabase[new Vector3I(0, 0, 1)] = 4;
-        VoxelDatabase[new Vector3I(0, 0, 2)] = 4;
-
         CallDeferred("StartGeneration");
     }
 
