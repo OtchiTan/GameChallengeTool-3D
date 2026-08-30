@@ -41,6 +41,7 @@ LevelPathfinder = SubResource("Resource_o8k11")
 ReachPheromoneGenerator = SubResource("Resource_6ksr0")
 VoxelDatabase = SubResource("Resource_jl41k")
 LevelGenerator = SubResource("Resource_yo4xn")
+DrawReachPheromone = false
 metadata/_custom_type_script = "uid://dwex06qxe1psd"
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=955697983]

@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Godot;
-using Mario3D.scripts.Voxel;
 using Mario3D.scripts.Voxel.Database;
 
 namespace Mario3D.scripts.LevelInput;
@@ -8,12 +7,7 @@ namespace Mario3D.scripts.LevelInput;
 [GlobalClass]
 public partial class LevelParser : Resource
 {
-    private LevelDescription _description;
-
-    public LevelParser()
-    {
-        _description = new LevelDescription();
-    }
+    private LevelDescription _description = new();
 
     public LevelDescription ParseLevelDescription(VoxelDatabase voxels, int voxelSize)
     {

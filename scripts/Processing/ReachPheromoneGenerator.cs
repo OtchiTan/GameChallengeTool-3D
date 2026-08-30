@@ -9,7 +9,8 @@ public partial class ReachPheromoneGenerator : Resource
     public void GenerateReachPheromoneMap(
         Vector3I chunkIndex,
         VoxelDatabase levelVoxels,
-        VoxelDatabase pheromoneVoxels)
+        VoxelDatabase pheromoneVoxels,
+        float pixelPerVoxel)
     {
         var origin = chunkIndex * levelVoxels.ChunkSize;
         for (var x = origin.X; x < origin.X + levelVoxels.ChunkSize.X; x++)
@@ -24,7 +25,7 @@ public partial class ReachPheromoneGenerator : Resource
 
                     if (voxel != 0 || belowVoxel == 0) continue;
 
-                    var value = 6;
+                    var value = (int)(100 / pixelPerVoxel);
 
                     // Extend vertical
                     for (var oy = y; oy < levelVoxels.ChunkSize.Y; oy++)

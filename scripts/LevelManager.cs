@@ -45,6 +45,9 @@ public partial class LevelManager : Node3D
         VoxelDatabase.ChunkSize = new Vector3I(ChunkSize, ChunkSize, ChunkSize);
         LevelGenerator ??= new LevelGenerator();
 
+        VoxelDatabase[new Vector3I(0, 0, 1)] = 4;
+        VoxelDatabase[new Vector3I(0, 0, 2)] = 4;
+
         CallDeferred("StartGeneration");
     }
 
@@ -110,7 +113,8 @@ public partial class LevelManager : Node3D
             ReachPheromoneGenerator.GenerateReachPheromoneMap(
                 chunk.Key,
                 VoxelDatabase,
-                _reachPheromoneDatabase
+                _reachPheromoneDatabase,
+                PixelPerVoxel
             );
             chunk.Value.RenderChunk(VoxelDatabase, _reachPheromoneDatabase, DrawReachPheromone, PixelPerVoxel / 16f);
         }

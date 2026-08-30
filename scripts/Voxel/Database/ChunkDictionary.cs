@@ -5,22 +5,22 @@ namespace Mario3D.scripts.Voxel.Database;
 
 public class ChunkDictionary : IChunkDatabase
 {
-    private Dictionary<Vector3I, int> _voxels = new();
+    private readonly Dictionary<Vector3I, int> _voxels = new();
 
     private int _maxValue;
 
-    public bool SetVoxel(int x, int y, int z, int voxel)
+    public bool SetVoxel(Vector3I index, int voxel)
     {
         if (voxel > _maxValue)
             _maxValue = voxel;
 
-        _voxels[new Vector3I(x, y, z)] = voxel;
+        _voxels[index] = voxel;
         return true;
     }
 
-    public int GetVoxel(int x, int y, int z)
+    public int GetVoxel(Vector3I index)
     {
-        return _voxels.GetValueOrDefault(new Vector3I(x, y, z), 0);
+        return _voxels.GetValueOrDefault(index, 0);
     }
 
     public void Normalize(int max)
@@ -32,10 +32,5 @@ public class ChunkDictionary : IChunkDatabase
         }
 
         _maxValue = max;
-    }
-
-    public int CountVoxels()
-    {
-        return _voxels.Count;
     }
 }

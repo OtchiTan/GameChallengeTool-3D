@@ -1,15 +1,13 @@
 using System.Collections.Generic;
-using System.Linq;
 using Godot;
 
 namespace Mario3D.scripts.Voxel.Database;
 
 public interface IChunkDatabase
 {
-    public bool SetVoxel(int x, int y, int z, int voxel);
-    public int GetVoxel(int x, int y, int z);
+    public bool SetVoxel(Vector3I index, int voxel);
+    public int GetVoxel(Vector3I index);
     public void Normalize(int max);
-    public int CountVoxels();
 }
 
 public enum ChunkDatabaseType
@@ -25,11 +23,6 @@ public partial class VoxelDatabase : Resource
 
     [Export] public ChunkDatabaseType ChunkDatabaseType = ChunkDatabaseType.VoxelDictionary;
     public Vector3I ChunkSize;
-
-    public VoxelDatabase()
-    {
-        _chunkDatabases[Vector3I.Zero] = InitDatabase();
-    }
 
     /**
      * Create empty database with same parameters
@@ -51,11 +44,6 @@ public partial class VoxelDatabase : Resource
         }
     }
 
-    public int CountVoxels()
-    {
-        return _chunkDatabases.Sum(chunkDatabase => chunkDatabase.Value.CountVoxels());
-    }
-
     private IChunkDatabase InitDatabase()
     {
         return ChunkDatabaseType switch
@@ -68,24 +56,25 @@ public partial class VoxelDatabase : Resource
 
     private bool SetVoxel(Vector3I index, int voxel)
     {
-        /*var chunkIndex = index / ChunkSize;
+        var chunkIndex = index / ChunkSize;
+
+        var internalIndex = index - ChunkSize * chunkIndex;
 
         if (_chunkDatabases.TryGetValue(chunkIndex, out var chunkDatabase))
         {
-            index -= ChunkSize * chunkIndex;
-            return chunkDatabase.SetVoxel(index.X, index.Y, index.Z, voxel);
+            return chunkDatabase.SetVoxel(internalIndex, voxel);
         }
 
-        _chunkDatabases[chunkIndex] = InitDatabase();*/
-        return _chunkDatabases[Vector3I.Zero].SetVoxel(index.X, index.Y, index.Z, voxel);
+        _chunkDatabases[chunkIndex] = InitDatabase();
+        return _chunkDatabases[chunkIndex].SetVoxel(internalIndex, voxel);
     }
 
     private int GetVoxel(Vector3I index)
     {
-        //var chunkIndex = index / ChunkSize;
-        //index -= ChunkSize * chunkIndex;
-        return _chunkDatabases.TryGetValue(Vector3I.Zero, out var chunkDatabase)
-            ? chunkDatabase.GetVoxel(index.X, index.Y, index.Z)
+        var chunkIndex = index / ChunkSize;
+        var internalIndex = index - ChunkSize * chunkIndex;
+        return _chunkDatabases.TryGetValue(chunkIndex, out var chunkDatabase)
+            ? chunkDatabase.GetVoxel(internalIndex)
             : 0;
     }
 
